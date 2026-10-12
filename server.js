@@ -12,6 +12,7 @@ const ROOT=__dirname;
 const DATA_FILE=path.resolve(process.env.DATA_FILE||path.join(ROOT,"data","db.json"));
 const UPLOAD_DIR=path.resolve(process.env.UPLOAD_DIR||path.join(ROOT,"uploads"));
 const PORT=Number(process.env.PORT||3000);
+const COOKIE_SECURE=process.env.NODE_ENV==="production"||process.env.COOKIE_SECURE==="true";
 const SESSION_TTL=1000*60*60*8;
 const ADMIN_USER=process.env.ADMIN_USER;
 const ADMIN_PASSWORD_HASH=process.env.ADMIN_PASSWORD_HASH;
@@ -91,13 +92,13 @@ async function api(req,res){
       if(data.username!==ADMIN_USER||!verifyPassword(String(data.password||""),ADMIN_PASSWORD_HASH))return json(res,401,{error:"Invalid credentials"});
       const sid=crypto.randomBytes(32).toString("hex"),csrf=crypto.randomBytes(32).toString("hex");
       sessions.set(sid,{expires:Date.now()+SESSION_TTL,csrf});
-      res.writeHead(200,{"Content-Type":"application/json","Set-Cookie":`sid=${sid}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${SESSION_TTL/1000}`,"Cache-Control":"no-store"});return res.end(JSON.stringify({ok:true}));
+      res.writeHead(200,{"Content-Type":"application/json","Set-Cookie":`sid=${sid}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${SESSION_TTL/1000}${COOKIE_SECURE?"; Secure":""}`,"Cache-Control":"no-store"});return res.end(JSON.stringify({ok:true}));
     }catch(e){return json(res,400,{error:"Invalid request"});}
   }
   if(pathname==="/api/logout"&&req.method==="POST"){
     if(!requireAuth(req,res))return;
     const sid=parseCookies(req).sid;if(sid)sessions.delete(sid);
-    res.writeHead(200,{"Content-Type":"application/json","Set-Cookie":"sid=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0","Cache-Control":"no-store"});return res.end(JSON.stringify({ok:true}));
+    res.writeHead(200,{"Content-Type":"application/json","Set-Cookie":`sid=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${COOKIE_SECURE?"; Secure":""}`,"Cache-Control":"no-store"});return res.end(JSON.stringify({ok:true}));
   }
   if(pathname==="/api/me"&&req.method==="GET")return json(res,200,{authenticated:isAuth(req)});
 
