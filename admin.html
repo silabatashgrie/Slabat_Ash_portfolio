@@ -31,21 +31,1388 @@ textarea{min-height:105px;resize:vertical}.check{display:flex;align-items:center
 .note{font-size:.88rem;color:var(--muted)}.logout{margin-top:25px;width:100%}
 @media(max-width:900px){.admin-shell{grid-template-columns:1fr}.admin-sidebar{height:auto;position:relative;border-right:0;border-bottom:1px solid var(--line)}.admin-nav{display:flex;overflow:auto}.admin-nav button{white-space:nowrap}.admin-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.admin-main{padding:18px}.form-grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.admin-top{align-items:flex-start;flex-direction:column}}
-</style>
+/* ADMIN-DARK-REFRESH-V1 */
+.admin-login,
+.admin-shell {
+  --bg: #1e222b;
+  --surface: #292f3a;
+  --surface2: #343c49;
+  --text: #f4f7fb;
+  --muted: #aab5c5;
+  --line: #414b5a;
+  --accent: #00e5f5;
+  --accent2: #00bccc;
+  --shadow: 0 18px 48px rgba(0, 0, 0, .28);
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+}
+
+.admin-login {
+  background: var(--bg);
+  background-image: radial-gradient(
+    circle at 85% 10%,
+    rgba(0, 229, 245, .09),
+    transparent 38%
+  );
+}
+
+.login-card {
+  background: #292f3a;
+  border: 1px solid #414b5a;
+  border-radius: 22px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .35);
+}
+
+.login-card h1,
+.admin-main h1,
+.admin-main h2,
+.admin-main h3 {
+  color: var(--text);
+  letter-spacing: -.025em;
+}
+
+.admin-shell {
+  background:
+    radial-gradient(circle at 95% 0%, rgba(0, 229, 245, .045), transparent 30%),
+    var(--bg);
+}
+
+.admin-sidebar {
+  background: rgba(25, 29, 37, .97);
+  border-right-color: #363e4b;
+  box-shadow: 8px 0 28px rgba(0, 0, 0, .10);
+}
+
+.admin-brand {
+  color: #f4f7fb;
+  letter-spacing: -.035em;
+  padding: 5px 8px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-brand .accent {
+  color: var(--accent);
+}
+
+.admin-nav {
+  margin-top: 18px;
+}
+
+.admin-nav button {
+  min-height: 44px;
+  transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
+
+.admin-nav button:hover {
+  background: rgba(0, 229, 245, .07);
+  border-color: rgba(0, 229, 245, .22);
+  color: var(--text);
+}
+
+.admin-nav button.active {
+  background: rgba(0, 229, 245, .11);
+  color: var(--accent);
+  border-color: rgba(0, 229, 245, .32);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.admin-main {
+  min-width: 0;
+}
+
+.admin-top {
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-top .eyebrow {
+  color: var(--accent);
+  letter-spacing: .13em;
+  font-weight: 700;
+}
+
+.admin-main h1 {
+  font-size: clamp(1.8rem, 3vw, 2.45rem);
+  line-height: 1.2;
+}
+
+.stat,
+.panel {
+  background: linear-gradient(145deg, #2d3440, #272d37);
+  border: 1px solid #414b5a;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .12);
+}
+
+.stat {
+  transition: transform .18s ease, border-color .18s ease;
+}
+
+.stat:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0, 229, 245, .38);
+}
+
+.stat strong {
+  color: var(--accent);
+  line-height: 1.25;
+  margin-top: 7px;
+}
+
+.panel h2,
+.panel h3 {
+  margin-top: 0;
+}
+
+.panel p {
+  color: #c0cad7;
+}
+
+.note,
+.admin-row small {
+  color: #aab5c5;
+}
+
+.admin-row {
+  border-bottom-color: var(--line);
+}
+
+input,
+textarea,
+select {
+  background: #202630;
+  color: #f4f7fb;
+  border-color: #465263;
+  border-radius: 11px;
+  min-height: 44px;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+textarea {
+  min-height: 110px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #8794a6;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 229, 245, .12);
+}
+
+.admin-main .btn:not(.ghost):not(.danger) {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #15212a;
+  font-weight: 700;
+}
+
+.admin-main .btn:not(.ghost):not(.danger):hover {
+  background: #6cf3fb;
+  border-color: #6cf3fb;
+}
+
+.admin-main .btn.ghost {
+  background: transparent;
+  border-color: #4a5667;
+  color: #e7edf5;
+}
+
+.admin-main .btn.ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.admin-main .btn.danger {
+  background: rgba(239, 83, 105, .09);
+  color: #ff9aaa;
+  border-color: #9f3f55;
+}
+
+.preview-box {
+  background: #202630;
+  border-color: #4a5667;
+}
+
+.admin-main button:focus-visible,
+.admin-nav button:focus-visible,
+.admin-main a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-nav button,
+  .stat,
+  input,
+  textarea,
+  select {
+    transition: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .admin-sidebar {
+    height: auto;
+    background: #191d25;
+  }
+
+  .admin-nav {
+    padding-bottom: 4px;
+  }
+
+  .admin-nav button.active {
+    box-shadow: inset 0 -3px 0 var(--accent);
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-main {
+    padding: 20px 14px;
+  }
+
+  .panel {
+    padding: 18px;
+  }
+
+  .stat {
+    padding: 15px;
+  }
+
+  .stat strong {
+    font-size: 1.65rem;
+  }
+}
+/* END ADMIN-DARK-REFRESH-V1 */
+/* ADMIN-OVERVIEW-REFRESH-V1 */
+#overview .stats {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+#overview .stat {
+  position: relative;
+  overflow: hidden;
+  min-height: 132px;
+  padding: 23px;
+  background: linear-gradient(145deg, #303845 0%, #262c36 100%);
+  border: 1px solid #414c5b;
+  border-radius: 18px;
+}
+
+#overview .stat::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--accent);
+  opacity: .8;
+}
+
+#overview .stat:nth-child(2)::before {
+  opacity: .6;
+}
+
+#overview .stat:nth-child(3)::before {
+  opacity: .45;
+}
+
+#overview .stat:nth-child(4)::before {
+  opacity: .3;
+}
+
+#overview .stat .note {
+  display: block;
+  font-size: .88rem;
+  font-weight: 600;
+  letter-spacing: .025em;
+}
+
+#overview .stat strong {
+  margin-top: 13px;
+  font-size: clamp(2rem, 3vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -.045em;
+  font-variant-numeric: tabular-nums;
+}
+
+#overview > .panel {
+  position: relative;
+  overflow: hidden;
+  padding: 28px;
+  background: linear-gradient(120deg, #2c3440, #252b35);
+  border-color: #414c5b;
+}
+
+#overview > .panel::after {
+  content: "";
+  position: absolute;
+  right: -45px;
+  bottom: -65px;
+  width: 180px;
+  height: 180px;
+  border: 1px solid rgba(0, 229, 245, .13);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+#overview > .panel h2 {
+  position: relative;
+  margin-bottom: 12px;
+  font-size: 1.25rem;
+}
+
+#overview > .panel p {
+  position: relative;
+  max-width: 680px;
+  margin-bottom: 0;
+  line-height: 1.8;
+  color: #b9c5d4;
+}
+
+@media (max-width: 1100px) {
+  #overview .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  #overview .stats {
+    gap: 11px;
+  }
+
+  #overview .stat {
+    min-height: 112px;
+    padding: 16px;
+  }
+
+  #overview .stat strong {
+    margin-top: 9px;
+    font-size: 1.8rem;
+  }
+
+  #overview > .panel {
+    padding: 20px;
+  }
+}
+/* END ADMIN-OVERVIEW-REFRESH-V1 */
+/* ADMIN-PROFILE-REFRESH-V1 */
+#profile > .panel {
+  padding: clamp(20px, 3vw, 32px);
+  background: linear-gradient(145deg, #2c3440 0%, #252b35 100%);
+  border: 1px solid #414c5b;
+  border-radius: 20px;
+}
+
+#profile > .panel > h2 {
+  margin-bottom: 25px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #414c5b;
+  font-size: 1.35rem;
+}
+
+#profile #profileForm .form-grid {
+  gap: 21px;
+}
+
+#profile #profileForm label {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  color: #dce5f0;
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+#profile #profileForm input:not([type="file"]),
+#profile #profileForm textarea,
+#profile #profileForm select {
+  width: 100%;
+  min-width: 0;
+  padding: 12px 14px;
+  color: #f4f7fb;
+  background: #202630;
+  border: 1px solid #465263;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+#profile #profileForm textarea {
+  min-height: 130px;
+  resize: vertical;
+  line-height: 1.7;
+}
+
+#profile #profileForm input:not([type="file"]):focus,
+#profile #profileForm textarea:focus,
+#profile #profileForm select:focus {
+  border-color: #00e5f5;
+  box-shadow: 0 0 0 3px rgba(0, 229, 245, .12);
+}
+
+#profile #profileForm input[type="file"] {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 12px;
+  color: #b9c5d4;
+  background: #202630;
+  border: 1px dashed #526176;
+  border-radius: 10px;
+  font-size: .85rem;
+}
+
+#profile .profile-photo-admin {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 2px;
+  padding: 20px;
+  background: rgba(20, 25, 33, .45);
+  border: 1px solid #414c5b;
+  border-radius: 14px;
+}
+
+#profile #profilePhotoPreview {
+  display: block;
+  width: 120px;
+  height: 120px;
+  max-width: 100%;
+  object-fit: cover;
+  border: 3px solid #00e5f5;
+  border-radius: 50%;
+  background: #202630;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+}
+
+#profile #profilePhotoPreview[hidden] {
+  display: none !important;
+}
+
+#profile #profilePhotoStatus {
+  margin: 0;
+  color: #aab5c5;
+  line-height: 1.7;
+}
+
+#profile .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #414c5b;
+}
+
+#profile .btn {
+  min-height: 44px;
+  padding: 11px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+#profile .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 20px rgba(0, 229, 245, .12);
+}
+
+@media (max-width: 600px) {
+  #profile > .panel {
+    padding: 18px;
+  }
+
+  #profile #profileForm .form-grid {
+    gap: 16px;
+  }
+
+  #profile .profile-photo-admin {
+    padding: 15px;
+  }
+
+  #profile .profile-photo-admin .btn,
+  #profile .form-actions .btn {
+    width: 100%;
+  }
+
+  #profile .form-actions {
+    justify-content: stretch;
+  }
+}
+/* END ADMIN-PROFILE-REFRESH-V1 */
+/* ADMIN-FORMS-REFRESH-V1 */
+
+/* Content editor panels */
+.admin-section:not(#overview):not(#profile) .panel {
+  border-radius: 16px;
+}
+
+.admin-section:not(#overview):not(#profile) .panel h2 {
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+/* Consistent form spacing */
+.admin-section:not(#overview):not(#profile) .form-grid {
+  column-gap: 18px;
+  row-gap: 18px;
+}
+
+.admin-section:not(#overview):not(#profile) form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  color: #dce5f0;
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+/* Inputs, selects and text areas */
+.admin-section:not(#overview):not(#profile) form input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]),
+.admin-section:not(#overview):not(#profile) form textarea,
+.admin-section:not(#overview):not(#profile) form select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 12px 14px;
+  color: #f4f7fb;
+  background: #202630;
+  border: 1px solid #465263;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.admin-section:not(#overview):not(#profile) form textarea {
+  min-height: 110px;
+  line-height: 1.65;
+  resize: vertical;
+}
+
+.admin-section:not(#overview):not(#profile) form input:focus,
+.admin-section:not(#overview):not(#profile) form textarea:focus,
+.admin-section:not(#overview):not(#profile) form select:focus {
+  border-color: #00e5f5;
+  box-shadow: 0 0 0 3px rgba(0, 229, 245, .12);
+}
+
+.admin-section:not(#overview):not(#profile) form input[type="file"] {
+  box-sizing: border-box;
+  max-width: 100%;
+  color: #b9c5d4;
+}
+
+.admin-section:not(#overview):not(#profile) form input[type="checkbox"],
+.admin-section:not(#overview):not(#profile) form input[type="radio"] {
+  accent-color: #00e5f5;
+}
+
+/* Form action buttons */
+.admin-section:not(#overview):not(#profile) .form-actions {
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.admin-section:not(#overview):not(#profile) form .btn {
+  min-height: 42px;
+  padding: 10px 17px;
+  border-radius: 10px;
+  font-weight: 700;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.admin-section:not(#overview):not(#profile) form .btn:hover {
+  transform: translateY(-1px);
+}
+
+.admin-section:not(#overview):not(#profile) form .btn:focus-visible {
+  outline: 2px solid #00e5f5;
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .admin-section:not(#overview):not(#profile) .form-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 15px;
+  }
+
+  .admin-section:not(#overview):not(#profile) .form-actions {
+    align-items: stretch;
+  }
+
+  .admin-section:not(#overview):not(#profile) .form-actions .btn {
+    max-width: 100%;
+  }
+}
+
+/* END ADMIN-FORMS-REFRESH-V1 */
+/* ADMIN-LARGE-SCREEN-REFRESH-V1 */
+
+/* Larger laptops and desktop monitors */
+@media (min-width: 1800px) {
+  html {
+    font-size: 17px;
+  }
+
+  .admin-shell {
+    grid-template-columns: 280px minmax(0, 1fr);
+  }
+
+  .admin-main {
+    width: 100%;
+    max-width: 1900px;
+    padding: clamp(32px, 2vw, 48px);
+  }
+
+  .admin-sidebar {
+    padding: 28px;
+  }
+
+  .admin-main .note,
+  .admin-main label {
+    line-height: 1.6;
+  }
+}
+
+/* Extra-wide screens such as 2560px */
+@media (min-width: 2400px) {
+  html {
+    font-size: 18px;
+  }
+
+  .admin-shell {
+    grid-template-columns: 300px minmax(0, 1fr);
+  }
+
+  .admin-main {
+    max-width: 2100px;
+    padding: 48px 56px;
+  }
+
+  .admin-sidebar {
+    padding: 32px 26px;
+  }
+
+  .admin-main h1 {
+    font-size: 2.6rem;
+  }
+
+  .admin-main .stats {
+    gap: 22px;
+  }
+
+  .admin-main .stat {
+    padding: 26px;
+  }
+}
+
+/* END ADMIN-LARGE-SCREEN-REFRESH-V1 */
+/* ADMIN-LARGE-SCREEN-TUNING-V1 */
+@media (min-width: 2400px) {
+  html {
+    font-size: 19px;
+  }
+
+  .admin-main {
+    max-width: 2200px;
+    padding: 52px 64px;
+  }
+
+  .admin-main .stats {
+    gap: 28px;
+  }
+
+  .admin-main .stat {
+    padding: 32px;
+    min-height: 150px;
+  }
+
+  .admin-main h1 {
+    font-size: 2.8rem;
+    line-height: 1.2;
+  }
+
+  .admin-main h2 {
+    font-size: 1.8rem;
+  }
+
+  .admin-main .stat strong {
+    font-size: 2.2rem;
+    line-height: 1.25;
+  }
+
+  .admin-main .note,
+  .admin-main label,
+  .admin-main input,
+  .admin-main select,
+  .admin-main textarea,
+  .admin-main button {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+}
+/* END ADMIN-LARGE-SCREEN-TUNING-V1 */
+
+/* CHAT-INBOX-V1 */
+.messages-nav-icon{width:19px;height:19px;flex:0 0 19px}
+.messages-nav-badge{margin-left:auto;min-width:21px;height:21px;padding:0 6px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#00d8e8;color:#10232b;font-size:11px;font-weight:800}
+.messages-nav-badge[hidden]{display:none}
+.admin-nav button[data-section="messages"]{display:flex;align-items:center;gap:10px}
+.chat-inbox{display:grid;grid-template-columns:minmax(260px,320px) minmax(0,1fr);min-height:590px;height:min(76vh,820px);background:var(--surface,#292f3a);border:1px solid var(--line,#414b5a);border-radius:18px;overflow:hidden;box-shadow:var(--shadow,0 18px 48px rgba(0,0,0,.2))}
+.chat-contacts-panel{min-width:0;display:flex;flex-direction:column;border-right:1px solid var(--line,#414b5a);background:rgba(19,23,31,.24)}
+.chat-contacts-header{padding:22px 18px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.chat-contacts-header h2{margin:0;font-size:20px}
+.chat-muted{margin:5px 0 0;color:var(--muted,#aab5c5);font-size:12px;overflow-wrap:anywhere}
+.chat-total-badge{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;padding:0 8px;border-radius:9px;background:rgba(0,229,245,.12);color:var(--accent,#00e5f5);font-size:12px;font-weight:700}
+.chat-search-wrap{margin:0 14px 12px;display:flex;align-items:center;gap:9px;padding:0 12px;border:1px solid var(--line,#414b5a);border-radius:11px;background:var(--surface,#292f3a)}
+.chat-search-wrap svg{width:17px;height:17px;flex:0 0 17px;fill:none;stroke:var(--muted,#aab5c5);stroke-width:1.8;stroke-linecap:round}
+.chat-search-wrap input{width:100%;min-width:0;padding:12px 0;background:transparent;border:0;outline:none;color:var(--text,#f4f7fb);font:inherit;font-size:12px}
+.chat-search-wrap input:focus-visible{outline:2px solid var(--accent,#00e5f5);outline-offset:3px}
+.chat-contact-list{flex:1;min-height:0;overflow-y:auto;padding:0 8px 12px}
+.chat-contact{width:100%;display:flex;align-items:flex-start;gap:11px;padding:13px 10px;border:1px solid transparent;border-radius:12px;background:transparent;color:var(--text,#f4f7fb);text-align:left;cursor:pointer}
+.chat-contact+.chat-contact{margin-top:3px}
+.chat-contact:hover{background:rgba(255,255,255,.035)}
+.chat-contact.active{background:rgba(0,229,245,.085);border-color:rgba(0,229,245,.2)}
+.chat-avatar,.chat-thread-avatar{width:40px;height:40px;flex:0 0 40px;display:flex;align-items:center;justify-content:center;border-radius:13px;background:var(--surface2,#343c49);color:var(--accent,#00e5f5);font-weight:800;font-size:14px}
+.chat-contact-copy{flex:1;min-width:0}
+.chat-contact-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.chat-contact-name{font-size:12px;font-weight:750;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-contact-date{font-size:10px;color:var(--muted,#aab5c5);white-space:nowrap}
+.chat-contact-preview{display:block;margin-top:5px;color:var(--muted,#aab5c5);font-size:11px;line-height:1.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-contact-subject{display:block;margin-top:4px;color:var(--muted,#aab5c5);font-size:10px;opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-thread-panel{display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--surface,#292f3a)}
+.chat-thread-header{display:flex;align-items:center;gap:13px;padding:19px 23px;border-bottom:1px solid var(--line,#414b5a);min-height:83px}
+.chat-thread-avatar{width:44px;height:44px;flex-basis:44px;border-radius:14px}
+.chat-thread-header h3{margin:0;font-size:15px;overflow-wrap:anywhere}
+.chat-thread-header p{margin:5px 0 0;color:var(--muted,#aab5c5);font-size:11px;overflow-wrap:anywhere}
+.chat-thread-header .chat-thread-meta{margin-top:5px}
+.chat-message-list{flex:1;min-height:0;overflow-y:auto;padding:24px clamp(14px,3vw,34px);display:flex;flex-direction:column;gap:17px}
+.chat-day-divider{align-self:center;margin:0 0 4px;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,.035);color:var(--muted,#aab5c5);font-size:10px}
+.chat-message{max-width:min(82%,600px);align-self:flex-start;min-width:0}
+.chat-message-bubble{padding:13px 15px;border:1px solid var(--line,#414b5a);border-radius:4px 15px 15px 15px;background:var(--surface2,#343c49);color:var(--text,#f4f7fb);font-size:13px;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere}
+.chat-message-subject{margin:0 0 7px;color:var(--accent,#00e5f5);font-size:11px;font-weight:750;overflow-wrap:anywhere}
+.chat-message-time{margin-top:6px;color:var(--muted,#aab5c5);font-size:10px}
+.chat-readonly-footer{display:flex;align-items:center;gap:8px;padding:13px 20px;border-top:1px solid var(--line,#414b5a);color:var(--muted,#aab5c5);font-size:11px}
+.chat-readonly-dot{width:7px;height:7px;border-radius:50%;background:#aab5c5;flex:0 0 7px}
+.chat-empty-state{margin:auto;text-align:center;max-width:300px;padding:28px 12px;color:var(--muted,#aab5c5)}
+.chat-empty-state h3{margin:14px 0 7px;color:var(--text,#f4f7fb);font-size:16px}
+.chat-empty-state p{margin:0;font-size:12px;line-height:1.7}
+.chat-empty-icon{width:54px;height:54px;margin:auto;display:grid;place-items:center;border-radius:17px;background:rgba(0,229,245,.09);color:var(--accent,#00e5f5);font-size:25px}
+.chat-contact-empty{padding:28px 14px;text-align:center;color:var(--muted,#aab5c5);font-size:12px;line-height:1.7}
+@media(max-width:850px){.chat-inbox{grid-template-columns:minmax(210px,260px) minmax(0,1fr);height:70vh;min-height:540px}.chat-thread-header{padding:15px}.chat-message-list{padding:18px 14px}}
+@media(max-width:620px){.chat-inbox{grid-template-columns:1fr;height:auto;min-height:0}.chat-contacts-panel{border-right:0;border-bottom:1px solid var(--line,#414b5a);max-height:310px}.chat-contact-list{max-height:195px}.chat-thread-panel{min-height:430px}.chat-message{max-width:94%}.chat-thread-header{padding:14px}.chat-message-list{padding:16px 12px}}
+
+
+/* CHAT-READABILITY-V1 - larger, more readable admin typography */
+.admin-shell {
+  font-size: 15px;
+}
+
+.admin-sidebar {
+  font-size: 15px;
+}
+
+.admin-nav button {
+  font-size: 14px;
+}
+
+.admin-main h1 {
+  font-size: clamp(25px, 2vw, 31px);
+}
+
+.admin-main h2 {
+  font-size: 21px;
+}
+
+.admin-main h3 {
+  font-size: 17px;
+}
+
+.admin-main p,
+.admin-main label,
+.admin-main .note {
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.admin-main input:not([type="checkbox"]):not([type="radio"]),
+.admin-main select,
+.admin-main textarea {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.admin-main button {
+  font-size: 14px;
+}
+
+.admin-main .admin-row {
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.admin-main small {
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Chat contact list */
+.chat-contacts-header h2 {
+  font-size: 23px;
+}
+
+.chat-muted {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.chat-search-wrap input {
+  font-size: 14px;
+  padding-top: 13px;
+  padding-bottom: 13px;
+}
+
+.chat-contact {
+  padding: 15px 11px;
+  gap: 12px;
+}
+
+.chat-avatar {
+  width: 44px;
+  height: 44px;
+  flex-basis: 44px;
+  font-size: 16px;
+}
+
+.chat-contact-name {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.chat-contact-date {
+  font-size: 12px;
+}
+
+.chat-contact-preview {
+  font-size: 13px;
+  line-height: 1.65;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.chat-contact-subject {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.chat-total-badge,
+.messages-nav-badge {
+  font-size: 13px;
+}
+
+/* Selected conversation */
+.chat-thread-header {
+  padding: 22px 25px;
+  min-height: 92px;
+}
+
+.chat-thread-avatar {
+  width: 48px;
+  height: 48px;
+  flex-basis: 48px;
+  font-size: 16px;
+}
+
+.chat-thread-header h3 {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.chat-thread-header p {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.chat-message-list {
+  gap: 20px;
+  padding-top: 27px;
+  padding-bottom: 27px;
+}
+
+.chat-day-divider {
+  font-size: 12px;
+  padding: 7px 12px;
+}
+
+.chat-message {
+  max-width: min(88%, 680px);
+}
+
+.chat-message-subject {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.chat-message-bubble {
+  padding: 15px 18px;
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.chat-message-time {
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.chat-readonly-footer {
+  padding: 15px 20px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.chat-empty-state h3 {
+  font-size: 18px;
+}
+
+.chat-empty-state p,
+.chat-contact-empty {
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+@media (max-width: 620px) {
+  .chat-contact-name {
+    font-size: 14px;
+  }
+
+  .chat-contact-preview {
+    font-size: 13px;
+  }
+
+  .chat-message {
+    max-width: 96%;
+  }
+
+  .chat-message-bubble {
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  .chat-thread-header h3 {
+    font-size: 17px;
+  }
+
+  .admin-main p,
+  .admin-main label,
+  .admin-main .note {
+    font-size: 14px;
+  }
+}
+
+/* CHAT-INBOX-REFINEMENT-V2 */
+#messages {
+  width: 100%;
+  max-width: none;
+}
+
+#messages .chat-inbox {
+  width: 100%;
+  grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+  min-height: 650px;
+  height: min(80vh, 900px);
+}
+
+#messages .chat-contacts-panel,
+#messages .chat-thread-panel {
+  min-width: 0;
+}
+
+#messages .chat-contact-list {
+  min-width: 0;
+}
+
+#messages .chat-contact {
+  padding: 15px 16px;
+  gap: 12px;
+}
+
+#messages .chat-contact-name {
+  font-size: 14px;
+}
+
+#messages .chat-contact-preview {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+#messages .chat-contact-subject {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+#messages .chat-message-list {
+  padding-left: clamp(22px, 3vw, 44px);
+  padding-right: clamp(22px, 3vw, 44px);
+}
+
+#messages .chat-message {
+  max-width: min(92%, 900px);
+}
+
+#messages .chat-message-bubble {
+  font-size: 16px;
+  line-height: 1.85;
+  padding: 17px 20px;
+}
+
+#messages .chat-message-subject,
+#messages .chat-message-time,
+#messages .chat-day-divider {
+  font-size: 13px;
+}
+
+#messages .chat-thread-header h3 {
+  font-size: 19px;
+}
+
+#messages .chat-thread-header p {
+  font-size: 14px;
+}
+
+@media (min-width: 1500px) {
+  #messages .chat-inbox {
+    grid-template-columns: minmax(330px, 400px) minmax(0, 1fr);
+  }
+
+  #messages .chat-message {
+    max-width: min(90%, 1000px);
+  }
+}
+
+@media (max-width: 850px) {
+  #messages .chat-inbox {
+    grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+    height: 75vh;
+    min-height: 560px;
+  }
+
+  #messages .chat-message {
+    max-width: 96%;
+  }
+}
+
+@media (max-width: 620px) {
+  #messages .chat-inbox {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+    min-height: 0;
+  }
+
+  #messages .chat-contacts-panel {
+    max-height: 340px;
+  }
+
+  #messages .chat-thread-panel {
+    min-height: 480px;
+  }
+
+  #messages .chat-message-list {
+    padding: 18px 14px;
+  }
+
+  #messages .chat-message-bubble {
+    font-size: 15px;
+    padding: 14px 16px;
+  }
+}
+
+/* CHAT-MESSAGE-WIDTH-FIX-V3 */
+#messages .chat-message {
+  display: block;
+  width: min(92%, 1000px);
+  max-width: 1000px;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+#messages .chat-message-bubble {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  font-size: 16px;
+  padding: 18px 22px;
+  line-height: 1.85;
+}
+
+@media (max-width: 620px) {
+  #messages .chat-message {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #messages .chat-message-bubble {
+    padding: 14px 16px;
+    font-size: 15px;
+  }
+}
+
+/* ADMIN-MENU-CARD-THEME-V2 */
+.admin-sidebar .admin-nav > button {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  transform: scale(1);
+  transform-origin: center;
+  transition:
+    color 220ms ease,
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease;
+}
+
+.admin-sidebar .admin-nav > button::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 3px;
+  height: 2px;
+  border-radius: 3px;
+  background: var(--accent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 40%, transparent);
+  transform: scaleX(0);
+  transform-origin: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 220ms ease, opacity 200ms ease;
+}
+
+.admin-sidebar .admin-nav > button::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 30%;
+  height: 40%;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 220ms ease, opacity 180ms ease;
+}
+
+.admin-sidebar .admin-nav > button:hover,
+.admin-sidebar .admin-nav > button:focus-visible {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 9%, transparent);
+  transform: scale(1.025);
+  z-index: 2;
+}
+
+.admin-sidebar .admin-nav > button:hover::after,
+.admin-sidebar .admin-nav > button:focus-visible::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+.admin-sidebar .admin-nav > button:hover::before,
+.admin-sidebar .admin-nav > button:focus-visible::before {
+  transform: scaleY(1);
+  opacity: 1;
+}
+
+.admin-sidebar .admin-nav > button.active {
+  color: var(--accent);
+  background: var(--surface2);
+  border-color: color-mix(in srgb, var(--accent) 32%, var(--line));
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.admin-sidebar .admin-nav > button.active::after {
+  transform: scaleX(1);
+  opacity: .9;
+}
+
+@media (max-width: 900px) {
+  .admin-sidebar .admin-nav > button.active {
+    box-shadow: inset 0 -3px 0 var(--accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-sidebar .admin-nav > button,
+  .admin-sidebar .admin-nav > button::before,
+  .admin-sidebar .admin-nav > button::after {
+    transition: none;
+  }
+
+  .admin-sidebar .admin-nav > button:hover,
+  .admin-sidebar .admin-nav > button:focus-visible {
+    transform: none;
+  }
+}
+/* END ADMIN-MENU-CARD-THEME-V2 */
+.password-change-panel form {
+  max-width: 520px;
+}
+.password-change-panel input {
+  width: 100%;
+}
+#passwordChangeStatus {
+  overflow-wrap: anywhere;
+}
+
+/* ADMIN-LOGIN-BUTTON-HOVER-V1 */
+#adminLogin #loginForm > button[type="submit"] {
+  display: flex;
+  width: max-content;
+  min-width: 160px;
+  justify-content: center;
+  margin: 10px auto 0;
+  padding: 12px 28px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(98, 213, 255, .16);
+  transition:
+    transform .22s ease,
+    box-shadow .22s ease,
+    filter .22s ease;
+}
+
+#adminLogin #loginForm > button[type="submit"]:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 10px 26px rgba(98, 213, 255, .28),
+    0 0 0 1px rgba(98, 213, 255, .25);
+  filter: brightness(1.08);
+}
+
+#adminLogin #loginForm > button[type="submit"]:active {
+  transform: translateY(0) scale(.98);
+}
+
+#adminLogin #loginForm > button[type="submit"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #adminLogin #loginForm > button[type="submit"] {
+    transition: none;
+  }
+}
+/* END ADMIN-LOGIN-BUTTON-HOVER-V1 */
+
+/* ADMIN-ICON-NAV-V1 */
+.admin-nav .admin-nav-icon {
+  width:19px;
+  height:19px;
+  flex:0 0 19px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.7;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.admin-sidebar .admin-nav > button,
+.admin-sidebar .admin-nav .admin-nav-group-toggle,
+.admin-sidebar .admin-nav .admin-nav-submenu > button {
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+.admin-sidebar .admin-nav .admin-nav-group { min-width:0; display:grid; gap:6px; }
+.admin-sidebar .admin-nav .admin-nav-group-toggle {
+  width:100%;
+  min-height:44px;
+  justify-content:flex-start;
+  text-align:left;
+  font:inherit;
+  cursor:pointer;
+}
+.admin-nav .settings-chevron {
+  width:16px;
+  height:16px;
+  margin-left:auto;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  transition:transform .18s ease;
+}
+.admin-nav-group-toggle[aria-expanded="true"] .settings-chevron { transform:rotate(180deg); }
+.admin-sidebar .admin-nav .admin-nav-submenu {
+  display:grid;
+  gap:6px;
+  min-width:0;
+  margin-left:12px;
+  padding-left:10px;
+  border-left:1px solid var(--line);
+}
+.admin-sidebar .admin-nav .admin-nav-submenu[hidden] { display:none; }
+.admin-sidebar .admin-nav .admin-nav-submenu > button {
+  width:100%;
+  min-height:40px;
+  padding:9px 12px;
+  border:1px solid transparent;
+  border-radius:9px;
+  background:transparent;
+  color:var(--muted);
+  text-align:left;
+  font:inherit;
+  font-size:13px;
+  cursor:pointer;
+  transition:background .18s ease,border-color .18s ease,color .18s ease;
+}
+.admin-sidebar .admin-nav .admin-nav-submenu > button:hover,
+.admin-sidebar .admin-nav .admin-nav-submenu > button:focus-visible,
+.admin-sidebar .admin-nav .admin-nav-submenu > button.active {
+  color:var(--accent);
+  background:var(--surface2);
+  border-color:var(--line);
+}
+.admin-sidebar .admin-nav .admin-nav-group-toggle:hover,
+.admin-sidebar .admin-nav .admin-nav-group-toggle:focus-visible {
+  color:var(--accent);
+}
+@media (max-width:900px) {
+  .admin-sidebar .admin-nav .admin-nav-group { flex:0 0 auto; }
+  .admin-sidebar .admin-nav .admin-nav-submenu { margin-left:0; padding-left:0; border-left:0; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .admin-nav .settings-chevron,
+  .admin-nav-submenu > button { transition:none; }
+}
+/* END ADMIN-ICON-NAV-V1 */</style>
 </head>
 <body>
 <div id="adminLogin" class="admin-login">
   <div class="login-card">
-    <div class="eyebrow">PORTFOLIO CMS · DEMO</div>
     <h1>Admin Login</h1>
-    <p>Sign in with the administrator credentials configured on the server.</p>
     <form id="loginForm">
-      <label>Username<input id="adminUser" required value="admin"></label><br>
-      <label>Password<input id="adminPass" type="password" required placeholder="admin123"></label>
-      <p id="loginError" class="note"></p>
-      <button class="btn" type="submit">Sign in</button>
+      <label>Username<input id="adminUser" required value="admin" autocomplete="username"></label>
+      <label>Password<input id="adminPass" type="password" required autocomplete="current-password"></label>
+      <p id="loginError" class="note" role="alert"></p>
+      <button class="btn primary" type="submit">Sign in</button>
     </form>
-    <p class="note">The server must be configured with ADMIN_USER and ADMIN_PASSWORD_HASH before it can start.</p>
   </div>
 </div>
 
@@ -54,20 +1421,50 @@ textarea{min-height:105px;resize:vertical}.check{display:flex;align-items:center
 <aside class="admin-sidebar">
   <div class="admin-brand">slabat<span class="accent">.</span> Admin</div>
   <nav class="admin-nav">
-    <button class="active" data-section="overview">Overview</button>
-    <button data-section="profile">Profile</button>
-    <button data-section="skills">Skills</button>
-    <button data-section="projects">Projects</button>
-    <button data-section="portfolio">Portfolio</button>
-    <button data-section="services">Services</button>
-    <button data-section="blog">Blog</button>
-    <button data-section="messages">Messages</button><button data-section="dataTools">Data & Settings</button>
-  </nav>
+  <button class="active" data-section="overview">
+    <svg class="admin-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg><span>Overview</span>
+  </button>
+  <button data-section="profile">
+    <svg class="admin-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg><span>Profile</span>
+  </button>
+  <button data-section="skills">
+    <svg class="admin-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 8-5 4 5 4M16 8l5 4-5 4M14 4l-4 16"/></svg><span>Skills</span>
+  </button>
+  <button data-section="projects">
+    <svg class="admin-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M3 11h18"/></svg><span>Projects</span>
+  </button>
+  <button data-section="portfolio">
+    <svg class="admin-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V4h8v3M3 12h18M10 12v2h4v-2"/></svg><span>Portfolio</span>
+  </button>
+  <button data-section="services">
+    <svg class="admin-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg><span>Services</span>
+  </button>
+  <button data-section="blog">
+    <svg class="admin-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M7 8h10M7 12h10M7 16h7"/></svg><span>Blog</span>
+  </button>
+  <button data-section="messages" aria-label="Messages" title="Messages">
+    <svg class="admin-nav-icon messages-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.2 7.6L3 21l1.9-5.8A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8 11.5h8M8 8.5h5"/></svg><span>Messages</span><span id="messagesNavBadge" class="messages-nav-badge" hidden>0</span>
+  </button>
+  <div class="admin-nav-group">
+    <button type="button" class="admin-nav-group-toggle" id="settingsMenuToggle" aria-expanded="false" aria-controls="settingsSubmenu">
+      <svg class="admin-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.6a8 8 0 0 1-2 1.2l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-2-1.2l-1.7.6-1.4-2.4 1.4-1.1a7 7 0 0 1 0-2.3l-1.4-1.1 1.4-2.4 1.7.6a8 8 0 0 1 2-1.2l.3-1.8h2.8l.3 1.8a8 8 0 0 1 2 1.2l1.7-.6 1.4 2.4-1.4 1.1a7 7 0 0 1 0 2.2Z" transform="translate(-1 -1) scale(1.04)"/></svg>
+      <span>Settings</span><svg class="settings-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+    </button>
+    <div class="admin-nav-submenu" id="settingsSubmenu" hidden>
+      <button type="button" data-section="dataTools">
+        <svg class="admin-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><span>Data</span>
+      </button>
+      <button type="button" data-section="security">
+        <svg class="admin-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/></svg><span>Security</span>
+      </button>
+    </div>
+  </div>
+</nav>
   <button id="logoutBtn" class="btn ghost logout">Logout</button>
 </aside>
 
 <main class="admin-main">
-<div class="admin-top"><div><div class="eyebrow">CONTENT MANAGEMENT</div><h1>Dashboard</h1></div><a class="btn ghost" href="index.html" target="_blank">Open Website ↗</a></div>
+<div class="admin-top"><div><div class="eyebrow">CONTENT MANAGEMENT</div><h1>Dashboard</h1></div><a class="btn ghost" href="index.html" target="_blank">Open Website &#8599;</a></div>
 
 <section id="overview" class="admin-section active">
   <div class="stats">
@@ -86,55 +1483,361 @@ textarea{min-height:105px;resize:vertical}.check{display:flex;align-items:center
 <label class="full">Bio<textarea name="bio"></textarea></label>
 <label>Email<input name="email"></label><label>Phone<input name="phone"></label>
 <label>Location<input name="location"></label><label>Availability<input name="availability"></label>
-<label>LinkedIn<input name="linkedin"></label><label>GitHub<input name="github"></label>
-<label>Telegram<input name="telegram"></label>
+<label>LinkedIn URL<input name="linkedin" type="url" placeholder="https://www.linkedin.com/in/..." ></label><label>GitHub URL<input name="github" type="url" placeholder="https://github.com/..." ></label>
+<label>Telegram URL<input name="telegram" type="url" placeholder="https://t.me/..." ></label>
+<label>WhatsApp number or URL<input name="whatsapp" placeholder="+251... or https://wa.me/..." ></label><label>X profile URL<input name="x" type="url" placeholder="https://x.com/..." ></label>
+<label>Facebook URL<input name="facebook" type="url" placeholder="https://facebook.com/..." ></label><label>YouTube channel URL<input name="youtube" type="url" placeholder="https://youtube.com/@..." ></label>
+<label class="full">Profile Photo
+  <input id="profilePhotoFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+</label>
+<div class="full profile-photo-admin">
+  <img id="profilePhotoPreview" alt="Profile photo preview" hidden>
+  <p id="profilePhotoStatus" class="note">Choose an image, then upload and save it as your profile photo.</p>
+  <button class="btn" id="uploadProfilePhotoBtn" type="button">Upload &amp; Save Profile Photo</button>
+</div>
 </div><div class="form-actions"><button class="btn" type="submit">Save Profile</button></div></form></div>
 </section>
 
 <section id="skills" class="admin-section"><div class="admin-grid">
 <div class="panel"><h2>Skill Editor</h2><form id="skillForm"><input type="hidden" id="skillId"><div class="form-grid">
-<label>Skill<input id="skillName" required></label><label>Category<input id="skillCategory" required></label><label>Level %<input id="skillLevel" type="number" min="0" max="100" required></label></div>
+<label>Skill<input id="skillName" required></label><label>Level %<input id="skillLevel" type="number" min="0" max="100" required></label></div>
 <div class="form-actions"><button class="btn" type="submit">Save Skill</button><button type="button" class="btn ghost" id="cancelSkill">Clear</button></div></form></div>
 <div class="panel"><h2>Current Skills</h2><div id="skillList"></div></div></div></section>
 
 <section id="projects" class="admin-section"><div class="admin-grid">
-<div class="panel"><h2>Project Editor</h2><form id="projectForm"><input type="hidden" id="projectId"><div class="form-grid">
-<label>Title<input id="projectTitle" required></label><label>Category<input id="projectCategory" required></label>
-<label class="full">Description<textarea id="projectDescription" required></textarea></label>
-<label class="full">Tech stack <small class="note">comma separated</small><input id="projectTech"></label>
-<label>Demo URL<input id="projectDemo"></label><label>GitHub URL<input id="projectGithub"></label><label class="full">Image URL<input id="projectImage" placeholder="/uploads/example.jpg"></label>
-<label class="check full"><input id="projectFeatured" type="checkbox"> Show in Featured Projects</label>
-</div><div class="form-actions"><button class="btn" type="submit">Save Project</button><button type="button" class="btn ghost" id="cancelProject">Clear</button></div></form></div>
+<div class="panel">
+  <h2>Project Editor</h2>
+  <form id="projectForm">
+    <input type="hidden" id="projectId">
+    <div class="form-grid">
+      <label>
+        Project Title *
+        <input id="projectTitle" type="text"
+          placeholder="e.g. Equb Management System"
+          maxlength="100" required
+          aria-describedby="projectTitleHelp">
+        <small id="projectTitleHelp" class="note">
+          Enter a clear project name, e.g. Equb Management System
+          or Gojjam Agriculture Management System.
+        </small>
+      </label>
+
+      <label>
+  Project Category *
+  <select id="projectCategory" required>
+    <option value="Web Development">Web Development</option>
+    <option value="Software Development">Software Development</option>
+    <option value="AI &amp; Machine Learning">AI &amp; Machine Learning</option>
+    <option value="Database">Database</option>
+    <option value="Networking">Networking</option>
+    <option value="Cybersecurity">Cybersecurity</option>
+    <option value="Graphic Design">Graphic Design</option>
+    <option value="Video Editing">Video Editing</option>
+    <option value="Mobile App Development">Mobile App Development</option>
+    <option value="Desktop Applications">Desktop Applications</option>
+    <option value="Backend &amp; API">Backend &amp; API</option>
+    <option value="UI/UX Design">UI/UX Design</option>
+    <option value="Data Analysis">Data Analysis</option>
+    <option value="DevOps &amp; Cloud">DevOps &amp; Cloud</option>
+    <option value="IT Support">IT Support</option>
+    <option value="Automation &amp; Scripting">Automation &amp; Scripting</option>
+    <option value="Game Development">Game Development</option>
+    <option value="IoT &amp; Embedded Systems">IoT &amp; Embedded Systems</option>
+    <option value="Research &amp; Academic">Research &amp; Academic</option>
+    <option value="Other">Other</option>
+    <option value="Web Application">Web Application (existing project)</option>
+  </select>
+  <small class="note">
+    Choose the category that best describes this project.
+    Public filters will use the category you select.
+  </small>
+</label>
+
+<label class="full">
+        Project Description *
+        <textarea id="projectDescription"
+          placeholder="e.g. A web-based system for managing Equb members, contributions, rounds, and payments."
+          required aria-describedby="projectDescriptionHelp"></textarea>
+        <small id="projectDescriptionHelp" class="note">
+          Explain what the project does, who it helps, and its main features.
+        </small>
+      </label>
+
+      <label class="full">
+        Tech Stack
+        <small class="note">Separate technologies with commas.</small>
+        <input id="projectTech" type="text"
+          placeholder="e.g. HTML, CSS, JavaScript, Node.js, PostgreSQL"
+          aria-describedby="projectTechHelp">
+        <small id="projectTechHelp" class="note">
+          List the programming languages, frameworks, and tools used.
+        </small>
+      </label>
+
+      <label>
+        Demo URL
+        <input id="projectDemo" type="url"
+          placeholder="https://your-project-demo.com"
+          aria-describedby="projectDemoHelp">
+        <small id="projectDemoHelp" class="note">
+          Enter the live website or working demo link, if available.
+        </small>
+      </label>
+
+      <label>
+        GitHub URL
+        <input id="projectGithub" type="url"
+          placeholder="https://github.com/username/repository"
+          aria-describedby="projectGithubHelp">
+        <small id="projectGithubHelp" class="note">
+          Enter the repository link. Leave blank if unavailable.
+        </small>
+      </label>
+
+      <label class="full">
+        Project Image URL
+        <input id="projectImage" type="text"
+          placeholder="/uploads/equb-project.jpg"
+          aria-describedby="projectImageHelp">
+        <small id="projectImageHelp" class="note">
+          Upload an image below, or enter an existing image URL/path.
+          Leave blank if the project has no image.
+        </small>
+      </label>
+
+      <div class="full project-image-tools">
+        <label for="projectImageFile">Choose Project Image</label>
+        <input id="projectImageFile" type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif">
+        <small class="note">JPG, PNG, WEBP or GIF. Maximum size: 8 MB.</small>
+        <div class="project-image-preview-wrap">
+          <img id="projectImagePreview" alt="Project image preview" hidden>
+        </div>
+        <div class="form-actions">
+          <button class="btn" id="uploadProjectImageBtn" type="button">
+            Upload Project Image
+          </button>
+        </div>
+        <p id="projectImageStatus" class="note" role="status" aria-live="polite"></p>
+      </div>
+
+      <label class="check full">
+        <input id="projectFeatured" type="checkbox">
+        Show in Featured Projects
+        <small class="note">
+          Check this to highlight the project on your public portfolio.
+        </small>
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn" type="submit">Save Project</button>
+      <button type="button" class="btn ghost" id="cancelProject">Clear</button>
+    </div>
+  </form>
+</div>
 <div class="panel"><h2>Current Projects</h2><div id="projectList"></div></div></div></section>
 
-<section id="portfolio" class="admin-section"><div class="admin-grid">
-<div class="panel"><h2>Portfolio Editor</h2><form id="portfolioForm"><input type="hidden" id="portfolioId"><div class="form-grid">
-<label>Title<input id="portfolioTitle" required></label><label>Category<input id="portfolioCategory" required></label>
-<label class="full">Description<textarea id="portfolioDescription" required></textarea></label><label class="full">Project URL<input id="portfolioLink"></label><label class="full">Image URL<input id="portfolioImage" placeholder="/uploads/example.jpg"></label>
-</div><div class="form-actions"><button class="btn" type="submit">Save Item</button><button type="button" class="btn ghost" id="cancelPortfolio">Clear</button></div></form></div>
-<div class="panel"><h2>Portfolio Items</h2><div id="portfolioList"></div></div></div></section>
+
+<section id="portfolio" class="admin-section">
+  <div class="admin-grid">
+    <div class="panel">
+      <h2>Portfolio Editor</h2>
+      <form id="portfolioForm">
+        <input type="hidden" id="portfolioId">
+        <div class="form-grid">
+          <label>
+            Title *
+            <input id="portfolioTitle" required maxlength="160"
+              placeholder="e.g. Personal Portfolio Website"
+              aria-describedby="portfolioTitleHelp">
+            <small id="portfolioTitleHelp" class="note">
+              Use a clear title that tells visitors what you created.
+            </small>
+          </label>
+
+          <label>
+            Category *
+            <select id="portfolioCategory" required>
+              <option value="">Choose a category</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Software Development">Software Development</option>
+              <option value="AI &amp; Machine Learning">AI &amp; Machine Learning</option>
+              <option value="Database">Database</option>
+              <option value="Networking">Networking</option>
+              <option value="Cybersecurity">Cybersecurity</option>
+              <option value="Graphic Design">Graphic Design</option>
+              <option value="Video Editing">Video Editing</option>
+              <option value="Mobile App Development">Mobile App Development</option>
+              <option value="Desktop Applications">Desktop Applications</option>
+              <option value="Backend &amp; API">Backend &amp; API</option>
+              <option value="UI/UX Design">UI/UX Design</option>
+              <option value="Data Analysis">Data Analysis</option>
+              <option value="DevOps &amp; Cloud">DevOps &amp; Cloud</option>
+              <option value="IT Support">IT Support</option>
+              <option value="Automation &amp; Scripting">Automation &amp; Scripting</option>
+              <option value="Game Development">Game Development</option>
+              <option value="IoT &amp; Embedded Systems">IoT &amp; Embedded Systems</option>
+              <option value="Research &amp; Academic">Research &amp; Academic</option>
+              <option value="Other">Other</option>
+              <option value="Web Application">Web Application (existing project)</option>
+            </select>
+            <small class="note">
+              Select the category that best describes this portfolio item.
+            </small>
+          </label>
+
+          <label class="full">
+            Description *
+            <textarea id="portfolioDescription" required maxlength="3000"
+              placeholder="Describe the project, your role, the tools you used, and what you achieved."></textarea>
+          </label>
+
+          <label class="full">
+            Project URL
+            <input id="portfolioLink" type="url"
+              placeholder="https://example.com"
+              aria-describedby="portfolioLinkHelp">
+            <small id="portfolioLinkHelp" class="note">
+              Optional. Enter a live demo or public project link; leave blank if unavailable.
+            </small>
+          </label>
+
+          <label class="full">
+            Image URL or path
+            <input id="portfolioImage" type="text"
+              placeholder="/uploads/my-portfolio-project.jpg"
+              aria-describedby="portfolioImageHelp">
+            <small id="portfolioImageHelp" class="note">
+              Upload an image below or enter an existing image URL/path. Leave blank if no image is needed.
+            </small>
+          </label>
+
+          <div class="full portfolio-image-tools">
+            <label for="portfolioImageFile">Choose image from your computer</label>
+            <input id="portfolioImageFile" type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif">
+            <small class="note">
+              Supported formats: JPG, PNG, WEBP and GIF. Maximum size: 8 MB.
+            </small>
+            <div class="portfolio-image-preview-wrap">
+              <img id="portfolioImagePreview"
+                alt="Portfolio image preview" hidden>
+            </div>
+            <div class="form-actions">
+              <button class="btn" id="uploadPortfolioImageBtn" type="button">
+                Upload Portfolio Image
+              </button>
+            </div>
+            <p id="portfolioImageStatus" class="note"
+              role="status" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn" type="submit">Save Item</button>
+          <button type="button" class="btn ghost" id="cancelPortfolio">Clear</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h2>Portfolio Items</h2>
+      <div id="portfolioList"></div>
+    </div>
+  </div>
+</section>
 
 <section id="services" class="admin-section"><div class="admin-grid">
 <div class="panel"><h2>Service Editor</h2><form id="serviceForm"><input type="hidden" id="serviceId"><div class="form-grid">
-<label>Title<input id="serviceTitle" required></label><label>Icon<input id="serviceIcon" placeholder="✦"></label>
-<label class="full">Description<textarea id="serviceDescription" required></textarea></label>
+<label>Title<input id="serviceTitle" placeholder="e.g. Website Development" required></label>
+<label class="full">Description<textarea id="serviceDescription" placeholder="Describe the service, its features, and benefits..." required></textarea></label>
 </div><div class="form-actions"><button class="btn" type="submit">Save Service</button><button type="button" class="btn ghost" id="cancelService">Clear</button></div></form></div>
 <div class="panel"><h2>Services</h2><div id="serviceList"></div></div></div></section>
 
 <section id="blog" class="admin-section"><div class="admin-grid">
 <div class="panel"><h2>Blog Editor</h2><form id="blogForm"><input type="hidden" id="blogId"><div class="form-grid">
-<label>Title<input id="blogTitle" required></label><label>Date<input id="blogDate" type="date" required></label><label>Category<input id="blogCategory" required></label>
-<label class="full">Excerpt<textarea id="blogExcerpt" required></textarea></label><label class="full">Content<textarea id="blogContent" required></textarea></label>
+<label>Title<input id="blogTitle" type="text" required placeholder="e.g. How to Build a Responsive Website"></label><label>Date<input id="blogDate" type="date" required></label>
+<label class="full">Excerpt (Short Summary)<textarea id="blogExcerpt" required placeholder="Write a short summary of your article in 1Ã¢â‚¬â€œ3 sentences..."></textarea></label><label class="full">Content (Full Article)<textarea id="blogContent" required placeholder="Write your full article here, including headings, explanations, examples, and useful tips..."></textarea></label>
 </div><div class="form-actions"><button class="btn" type="submit">Save Post</button><button type="button" class="btn ghost" id="cancelBlog">Clear</button></div></form></div>
 <div class="panel"><h2>Blog Posts</h2><div id="blogList"></div></div></div></section>
 
-<section id="messages" class="admin-section"><div class="panel"><h2>Contact Messages</h2><div id="messageList"></div></div></section>
+<section id="messages" class="admin-section">
+  <div class="chat-inbox">
+    <aside class="chat-contacts-panel">
+      <div class="chat-contacts-header">
+        <div>
+          <h2>Messages</h2>
+          <p class="chat-muted">New messages</p>
+        </div>
+        <span id="chatConversationCount" class="chat-total-badge" aria-label="New messages">0</span>
+      </div>
+      <div class="chat-search-wrap">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg>
+        <input id="chatContactSearch" type="search" placeholder="Search contacts..." aria-label="Search contacts">
+      </div>
+      <div id="messageContacts" class="chat-contact-list" aria-label="Contact conversations"></div>
+    </aside>
+    <section class="chat-thread-panel" aria-label="Selected conversation">
+      <div id="chatThreadHeader" class="chat-thread-header">
+        <div class="chat-empty-avatar">?</div>
+        <div><h3>Select a conversation</h3><p class="chat-muted">Choose a contact to view messages</p></div>
+      </div>
+      <div id="messageList" class="chat-message-list" aria-live="polite">
+        <div class="chat-empty-state"><div class="chat-empty-icon">&#9993;</div><h3>Your inbox</h3><p>Select a contact to read their messages.</p></div>
+      </div>
+      <div class="chat-readonly-footer"><span class="chat-readonly-dot"></span> Read-only inbox | Replies are not available yet</div>
+    </section>
+  </div>
+</section>
 
 <section id="dataTools" class="admin-section">
 <div class="panel"><h2>Data & Settings</h2><p class="note">Export a backup of portfolio content, import a JSON backup, or reset server content to the starter demo data.</p>
 <div class="panel"><h3>Image Upload</h3><p class="note">Upload JPG, PNG, WEBP or GIF (max 8 MB), then copy the returned URL into a Project or Portfolio image field.</p><input id="imageUpload" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><p id="uploadResult" class="note"></p><button class="btn" id="uploadBtn" type="button">Upload Image</button></div>
 <div class="form-actions"><button class="btn" id="exportData">Export JSON</button><label class="btn ghost" style="cursor:pointer">Import JSON<input id="importData" type="file" accept=".json" hidden></label><button class="btn danger" id="resetData">Reset Server Data</button></div></div>
 <div class="panel"><h2>Live Preview</h2><div class="preview-box"><p><strong>How it works:</strong></p><p>1. Edit content in Admin.</p><p>2. Save it to the server.</p><p>3. Public pages load the current public content from the server API.</p><p>4. Private contact messages remain available only to authenticated admins.</p></div></div>
+</section>
+<section id="security" class="admin-section">
+  <div class="panel">
+    <h2>Security</h2>
+    <p class="note">Change your administrator password and review the password requirements.</p>
+    <div class="panel password-change-panel">
+  <h3>Change Admin Password</h3>
+  <p class="note">Use 12-128 characters, including an uppercase letter, a lowercase letter, a number, and a special character. You will need to sign in again after changing it.</p>
+  <form id="changePasswordForm">
+    <label>Current Password
+      <input id="currentPassword" name="currentPassword" type="password" autocomplete="current-password" required>
+    </label>
+    <label>New Password
+      <input id="newPassword" name="newPassword" type="password" minlength="12" maxlength="128" autocomplete="new-password" required>
+    </label>
+    <div class="password-strength" id="passwordStrengthPanel">
+      <div class="password-strength-heading">
+        <span>Password strength</span>
+        <span id="passwordStrengthLabel" aria-live="polite">Not entered</span>
+      </div>
+      <div id="passwordStrengthMeter" class="password-strength-track"
+           role="progressbar" aria-label="Password strength"
+           aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div id="passwordStrengthBar" class="password-strength-bar"></div>
+      </div>
+      <p class="password-requirements-title">Your password must have:</p>
+      <ul id="passwordRequirements" class="password-requirements">
+        <li data-password-rule="length"><span aria-hidden="true">&#9675;</span> 12-128 characters</li>
+        <li data-password-rule="upper"><span aria-hidden="true">&#9675;</span> At least one uppercase letter (A-Z)</li>
+        <li data-password-rule="lower"><span aria-hidden="true">&#9675;</span> At least one lowercase letter (a-z)</li>
+        <li data-password-rule="number"><span aria-hidden="true">&#9675;</span> At least one number (0-9)</li>
+        <li data-password-rule="special"><span aria-hidden="true">&#9675;</span> At least one special character (such as !, @, #)</li>
+      </ul>
+    </div>
+    <label>Confirm New Password
+      <input id="confirmPassword" name="confirmPassword" type="password" minlength="12" maxlength="128" autocomplete="new-password" required>
+    </label>
+    <p id="passwordChangeStatus" class="note" role="status" aria-live="polite"></p>
+    <button class="btn primary" id="changePasswordBtn" type="submit">Update Password</button>
+  </form>
+</div>
+  </div>
 </section>
 
 </main></div></div>

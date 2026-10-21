@@ -1,27 +1,115 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Let's discuss a project, collaboration or opportunity."><title>Contact | Alex Morgan</title><link rel="stylesheet" href="css/style.css"></head><body><header class="topbar">
+﻿<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Let's discuss a project, collaboration or opportunity."><title>Contact | Alex Morgan</title><link rel="stylesheet" href="css/style.css"></head><body><header class="topbar">
 <a class="brand" href="index.html"><span class="brand-mark">&lt;/&gt;</span><span data-profile="name">Alex Morgan</span><span class="accent">.</span></a>
-<button class="menu-toggle" aria-label="Open menu">☰</button>
+<button class="menu-toggle" aria-label="Open menu">â˜°</button>
 <nav class="nav">
 <a href="index.html">Dashboard</a><a href="about.html">About</a><a href="skills.html">Skills</a><a href="projects.html">Projects</a>
 <a href="portfolio.html">Portfolio</a><a href="services.html">Services</a><a href="resume.html">Resume</a><a href="blog.html">Blog</a><a href="contact.html">Contact</a>
-</nav><button class="theme" aria-label="Toggle theme">☾</button></header><main>
-<section class="container page-hero"><span class="eyebrow">CONTACT</span><h1>Let's build something <span class="gradient">useful.</span></h1><p>Replace the contact details below with your real information.</p></section>
-<section class="container section grid two"><form id="contactForm" class="card" ><label>Name<input required placeholder="Your name"></label><label>Email<input required type="email" placeholder="you@example.com"></label><label>Subject<input placeholder="Project subject"></label><label>Message<textarea required rows="6" placeholder="Tell me about your project..."></textarea></label><button class="btn primary" type="submit">Send Message →</button></form><div class="card contact-info"><h2>Contact details</h2><p><b>Email</b><br><span data-profile="email">hello@example.com</span></p><p><b>Location</b><br><span data-profile="location">Your City, Country</span></p><p><b>Social</b><br>LinkedIn • GitHub • Telegram</p></div></section>
-</main><footer><div class="container footer-inner"><span>© 2026 <span data-profile="name">Alex Morgan</span></span><span>Computer Science • Technology • Innovation</span></div></footer><script src="js/store.js"></script>
+</nav><button class="theme" aria-label="Toggle theme" type="button">🌙</button></header><main>
+<section class="container page-hero"><h1 class="page-title-with-icon"><span class="page-title-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:1em;height:1em;vertical-align:-0.12em"><rect x="3" y="4" width="18" height="17" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M7.5 18a4.5 4.5 0 0 1 9 0"/></svg></span><span class="gradient">CONTACT ME</span></h1></section>
+<section class="container section grid two"><form id="contactForm" class="card" ><label>Name<input name="name" autocomplete="name" required placeholder="Your name"></label><label>Email<input name="email" required type="email" autocomplete="email" placeholder="you@example.com"></label><label>Subject<input name="subject" placeholder="Project subject"></label><label>Message<textarea name="message" required rows="6" placeholder="Tell me about your project..."></textarea></label><button class="btn primary send-message-btn" type="submit" aria-label="Send message" title="Send message"><svg class="send-message-icon" aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M22 2 11 13" /><path d="m22 2-7 20-4-9-9-4Z" /></svg></button></form><div class="card contact-info"><h2>Contact details</h2><p><b>Email</b><br><a href="mailto:silabatashagre5@gmail.com" data-profile="email">silabatashagre5@gmail.com</a></p><p><b>Location</b><br><span data-profile="location">Bahir Dar, Amhara, Ethiopia</span></p><div class="contact-social-section"><b>Connect with me</b><div id="contactSocialLinks" class="contact-social-links" aria-label="Social media links"></div></div></div></section>
+</main><footer><div class="container footer-inner"><span>&#169; 2026 <span data-profile="name">Alex Morgan</span></span><span>Computer Science &#8226; Technology &#8226; Innovation</span></div></footer><script src="js/store.js"></script>
 <script src="js/main.js"></script>
 <script src="js/site.js"></script><script>
-document.addEventListener("DOMContentLoaded",()=>{
- const f=document.getElementById("contactForm"); if(!f)return;
- f.addEventListener("submit",async e=>{
-  e.preventDefault();
-  const data=Object.fromEntries(new FormData(f).entries());
-  const btn=f.querySelector('button[type="submit"]'); if(btn)btn.disabled=true;
-  try{
-   const r=await fetch("/api/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
-   const j=await r.json(); if(!r.ok)throw new Error(j.error||"Unable to send");
-   alert("Thank you. Your message has been received.");f.reset();
-  }catch(err){alert(err.message);}
-  finally{if(btn)btn.disabled=false;}
- });
-});
-</script></body></html>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("contactForm");
+  if (!form) return;
+
+  const button = form.querySelector('button[type="submit"]');
+  let isSending = false;
+  let noticeTimer;
+
+  function showNotice(message, type) {
+    let notice = document.getElementById("contactNotice");
+
+    if (!notice) {
+      notice = document.createElement("div");
+      notice.id = "contactNotice";
+      notice.setAttribute("role", "status");
+      notice.setAttribute("aria-live", "polite");
+
+      Object.assign(notice.style, {
+        position: "fixed",
+        right: "24px",
+        bottom: "24px",
+        zIndex: "99999",
+        maxWidth: "min(420px, calc(100vw - 32px))",
+        padding: "16px 20px",
+        borderRadius: "12px",
+        color: "#fff",
+        fontSize: "15px",
+        fontWeight: "600",
+        lineHeight: "1.5",
+        boxShadow: "0 12px 35px rgba(0,0,0,.25)",
+        opacity: "0",
+        transform: "translateY(10px)",
+        transition: "opacity .2s ease, transform .2s ease"
+      });
+
+      document.body.appendChild(notice);
+    }
+
+    clearTimeout(noticeTimer);
+    notice.textContent = message;
+    notice.style.background = type === "success" ? "#15803d" : "#b91c1c";
+    notice.style.opacity = "1";
+    notice.style.transform = "translateY(0)";
+
+    noticeTimer = setTimeout(() => {
+      notice.style.opacity = "0";
+      notice.style.transform = "translateY(10px)";
+    }, 5000);
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    if (isSending) return;
+    isSending = true;
+
+    const originalLabel = button ? button.getAttribute("aria-label") : null;
+      if (button) {
+        button.disabled = true;
+        button.setAttribute("aria-label", "Sending message...");
+        button.setAttribute("aria-busy", "true");
+      }
+
+    try {
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Unable to send. Please try again.");
+      }
+
+      form.reset();
+      showNotice(
+        "âœ“ Message sent successfully! Thank you for contacting me.",
+        "success"
+      );
+    } catch (error) {
+      showNotice(
+        error.message || "Unable to send. Please try again.",
+        "error"
+      );
+    } finally {
+      isSending = false;
+
+      if (button) {
+          button.disabled = false;
+          if (originalLabel) {
+            button.setAttribute("aria-label", originalLabel);
+          } else {
+            button.removeAttribute("aria-label");
+          }
+          button.removeAttribute("aria-busy");
+        }
+    }
+  });
+});</script></body></html>
