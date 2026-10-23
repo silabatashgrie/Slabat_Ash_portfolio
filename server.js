@@ -11,6 +11,19 @@ const crypto = require("crypto");
 const url = require("url");
 
 const ROOT = __dirname;
+const STORAGE_BACKEND = process.env.DATA_FILE
+  ? "json"
+  : String(process.env.STORAGE_BACKEND || "json").toLowerCase();
+
+if (!["json", "supabase"].includes(STORAGE_BACKEND)) {
+  console.error("Startup refused: invalid STORAGE_BACKEND.");
+  process.exit(1);
+}
+
+const supabaseStore = STORAGE_BACKEND === "supabase"
+  ? require("./supabase-store")
+  : null;
+
 const DATA_FILE = path.resolve(
   process.env.DATA_FILE || path.join(ROOT, "data", "db.json")
 );
@@ -82,10 +95,8 @@ if (
   process.exit(1);
 }
 
-if (!fs.existsSync(path.dirname(DATA_FILE))) {
-  fs.mkdirSync(path.dirname(DATA_FILE), {
-    recursive: true
-  });
+if (STORAGE_BACKEND === "json" && !fs.existsSync(path.dirname(DATA_FILE))) {
+  fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
 }
 
 if (!fs.existsSync(UPLOAD_DIR)) {
@@ -94,7 +105,7 @@ if (!fs.existsSync(UPLOAD_DIR)) {
   });
 }
 
-if (!fs.existsSync(DATA_FILE)) {
+if (STORAGE_BACKEND === "json" && !fs.existsSync(DATA_FILE)) {
   const example = path.join(
     path.dirname(DATA_FILE),
     "db.example.json"
@@ -648,6 +659,26 @@ function normalizeServiceTitle(value) {
     .trim();
 }
 
+async function readSupabasePublicData() {
+  const [profiles, skills, projects, portfolio, services, posts] =
+    await Promise.all([
+      supabaseStore.list("profile"),
+      supabaseStore.list("skills"),
+      supabaseStore.list("projects"),
+      supabaseStore.list("portfolio"),
+      supabaseStore.list("services"),
+      supabaseStore.list("posts")
+    ]);
+
+  return {
+    profile: profiles.find(row => row.id === "main")?.data || {},
+    skills: skills.map(row => row.data),
+    projects: projects.map(row => row.data),
+    portfolio: portfolio.map(row => row.data),
+    services: services.map(row => row.data),
+    posts: posts.map(row => row.data)
+  };
+}
 async function api(req, res) {
   const parsed = url.parse(req.url, true);
   const pathname = parsed.pathname;
@@ -937,11 +968,15 @@ async function api(req, res) {
     });
   }
 
-  let db = readDB();
+  let db = STORAGE_BACKEND === "json" ? readDB() : null;
   if (
     pathname === "/api/data" &&
     req.method === "GET"
   ) {
+    if (STORAGE_BACKEND === "supabase") {
+      return json(res, 200, await readSupabasePublicData());
+    }
+
     const publicData = { ...db };
     delete publicData.messages;
 
@@ -956,7 +991,7 @@ async function api(req, res) {
 
     try {
       const incoming = await jsonBody(req);
-      db = readDB();
+      db = STORAGE_BACKEND === "json" ? readDB() : null;
       if (
         !incoming ||
         typeof incoming !== "object" ||
@@ -1016,6 +1051,14 @@ async function api(req, res) {
         }
       }
 
+      if (STORAGE_BACKEND === "supabase") {
+        await supabaseStore.applyData(incoming);
+        return json(res, 200, {
+          ok: true,
+          data: await readSupabasePublicData()
+        });
+      }
+
       for (const key of allowed) {
         if (incoming[key] !== undefined) {
           db[key] = incoming[key];
@@ -1031,6 +1074,7 @@ async function api(req, res) {
     } catch (error) { return handleApiError(res, error); }
   }
 
+  // SUPABASE_COLLECTION_CRUD_V1
   const match = pathname.match(
     /^\/api\/(skills|projects|portfolio|services|posts)(?:\/([^/]+))?$/
   );
@@ -1047,39 +1091,161 @@ async function api(req, res) {
       });
     }
 
+    if (STORAGE_BACKEND === "supabase") {
+      try {
+        const rows = await supabaseStore.list(key);
+        const items = rows.map(row => row.data);
+
+        if (req.method === "GET" && !itemId) {
+          return json(res, 200, items);
+        }
+
+        if (req.method === "POST" && !itemId) {
+          const item = await jsonBody(req);
+
+          if (!item || typeof item !== "object" || Array.isArray(item)) {
+            return json(res, 400, { error: "Invalid item" });
+          }
+
+          if (key === "projects") {
+            const title = typeof item.title === "string" ? item.title.trim() : "";
+            if (!title) return json(res, 400, { error: "Project title is required" });
+            if (title.length > 100) {
+              return json(res, 400, { error: "Project title must be 100 characters or fewer" });
+            }
+            item.title = title;
+          }
+
+          if (key === "services") {
+            if (typeof item.title !== "string") {
+              return json(res, 400, { error: "Service title is required" });
+            }
+            item.title = item.title.trim();
+            const titleKey = normalizeServiceTitle(item.title);
+            if (!titleKey) return json(res, 400, { error: "Service title is required" });
+            if (items.some(existing => normalizeServiceTitle(existing.title) === titleKey)) {
+              return json(res, 409, { error: "A service with this title already exists" });
+            }
+          }
+
+          item.id = item.id || id(key.slice(0, 2));
+
+          const record = {
+            id: item.id,
+            data: item
+          };
+
+          if (["skills", "projects", "portfolio", "services", "posts"].includes(key)) {
+            record.position = rows.reduce(
+              (max, row) => Math.max(max, Number(row.position) || 0),
+              0
+            ) + 1;
+          }
+
+          const created = await supabaseStore.insert(key, record);
+          if (!created) {
+            return json(res, 500, { error: "Could not create item" });
+          }
+
+          return json(res, 201, created.data);
+        }
+
+        if (itemId && req.method === "GET") {
+          let decodedId;
+          try {
+            decodedId = decodeURIComponent(itemId);
+          } catch {
+            return json(res, 400, { error: "Invalid item ID" });
+          }
+          const record = await supabaseStore.get(key, decodedId);
+          if (!record) return json(res, 404, { error: "Not found" });
+          return json(res, 200, record.data);
+        }
+
+        if (itemId && (req.method === "PUT" || req.method === "DELETE")) {
+          let decodedId;
+          try {
+            decodedId = decodeURIComponent(itemId);
+          } catch {
+            return json(res, 400, { error: "Invalid item ID" });
+          }
+
+          if (!decodedId || decodedId.length > 200) {
+            return json(res, 400, { error: "Invalid item ID" });
+          }
+
+          const current = await supabaseStore.get(key, decodedId);
+          if (!current) return json(res, 404, { error: "Not found" });
+
+          if (req.method === "DELETE") {
+            const deleted = await supabaseStore.remove(key, decodedId);
+            if (!deleted) return json(res, 404, { error: "Not found" });
+            return json(res, 200, { ok: true });
+          }
+
+          const item = await jsonBody(req);
+          if (!item || typeof item !== "object" || Array.isArray(item)) {
+            return json(res, 400, { error: "Invalid item" });
+          }
+
+          if (key === "projects") {
+            const title = typeof item.title === "string" ? item.title.trim() : "";
+            if (!title) return json(res, 400, { error: "Project title is required" });
+            if (title.length > 100) {
+              return json(res, 400, { error: "Project title must be 100 characters or fewer" });
+            }
+            item.title = title;
+          }
+
+          if (key === "services") {
+            if (typeof item.title !== "string") {
+              return json(res, 400, { error: "Service title is required" });
+            }
+            item.title = item.title.trim();
+            const titleKey = normalizeServiceTitle(item.title);
+            if (!titleKey) return json(res, 400, { error: "Service title is required" });
+            if (items.some(existing =>
+              existing.id !== decodedId &&
+              normalizeServiceTitle(existing.title) === titleKey
+            )) {
+              return json(res, 409, { error: "A service with this title already exists" });
+            }
+          }
+
+          item.id = decodedId;
+          const updated = await supabaseStore.update(key, decodedId, item);
+          if (!updated) return json(res, 404, { error: "Not found" });
+          return json(res, 200, updated.data);
+        }
+
+        return json(res, 405, { error: "Method not allowed" });
+      } catch (error) {
+        return handleApiError(res, error);
+      }
+    }
+
     db[key] = Array.isArray(db[key]) ? db[key] : [];
 
-    if (req.method === "GET") {
+    if (req.method === "GET" && !itemId) {
       return json(res, 200, db[key]);
     }
 
-    if (req.method === "POST") {
+    if (req.method === "POST" && !itemId) {
       try {
         const item = await jsonBody(req);
         db = readDB();
-db[key] = Array.isArray(db[key]) ? db[key] : [];
+        db[key] = Array.isArray(db[key]) ? db[key] : [];
 
-        if (
-          !item ||
-          typeof item !== "object" ||
-          Array.isArray(item)
-        ) {
-          return json(res, 400, {
-            error: "Invalid item"
-          });
+        if (!item || typeof item !== "object" || Array.isArray(item)) {
+          return json(res, 400, { error: "Invalid item" });
         }
 
         if (key === "projects") {
           const title = typeof item.title === "string" ? item.title.trim() : "";
-
-          if (!title) {
-            return json(res, 400, { error: "Project title is required" });
-          }
-
+          if (!title) return json(res, 400, { error: "Project title is required" });
           if (title.length > 100) {
             return json(res, 400, { error: "Project title must be 100 characters or fewer" });
           }
-
           item.title = title;
         }
 
@@ -1089,13 +1255,8 @@ db[key] = Array.isArray(db[key]) ? db[key] : [];
           }
           item.title = item.title.trim();
           const titleKey = normalizeServiceTitle(item.title);
-          if (!titleKey) {
-            return json(res, 400, { error: "Service title is required" });
-          }
-          const duplicate = db.services.some(
-            existing => normalizeServiceTitle(existing.title) === titleKey
-          );
-          if (duplicate) {
+          if (!titleKey) return json(res, 400, { error: "Service title is required" });
+          if (db.services.some(existing => normalizeServiceTitle(existing.title) === titleKey)) {
             return json(res, 409, { error: "A service with this title already exists" });
           }
         }
@@ -1103,58 +1264,43 @@ db[key] = Array.isArray(db[key]) ? db[key] : [];
         item.id = item.id || id(key.slice(0, 2));
         db[key].push(item);
         writeDB(db);
-
         return json(res, 201, item);
       } catch (error) { return handleApiError(res, error); }
     }
 
-    if (
-      itemId &&
-      (req.method === "PUT" || req.method === "DELETE")
-    ) {
-      const index = db[key].findIndex(
-        item => item.id === itemId
-      );
-
-      if (index < 0) {
-        return json(res, 404, {
-          error: "Not found"
-        });
+    if (itemId && (req.method === "PUT" || req.method === "DELETE")) {
+      let decodedId;
+      try {
+        decodedId = decodeURIComponent(itemId);
+      } catch {
+        return json(res, 400, { error: "Invalid item ID" });
       }
+
+      if (!decodedId || decodedId.length > 200) {
+        return json(res, 400, { error: "Invalid item ID" });
+      }
+
+      const index = db[key].findIndex(item => item.id === decodedId);
+      if (index < 0) return json(res, 404, { error: "Not found" });
 
       if (req.method === "DELETE") {
         db[key].splice(index, 1);
         writeDB(db);
-
-        return json(res, 200, {
-          ok: true
-        });
+        return json(res, 200, { ok: true });
       }
 
       try {
         const item = await jsonBody(req);
-
-        if (
-          !item ||
-          typeof item !== "object" ||
-          Array.isArray(item)
-        ) {
-          return json(res, 400, {
-            error: "Invalid item"
-          });
+        if (!item || typeof item !== "object" || Array.isArray(item)) {
+          return json(res, 400, { error: "Invalid item" });
         }
 
         if (key === "projects") {
           const title = typeof item.title === "string" ? item.title.trim() : "";
-
-          if (!title) {
-            return json(res, 400, { error: "Project title is required" });
-          }
-
+          if (!title) return json(res, 400, { error: "Project title is required" });
           if (title.length > 100) {
             return json(res, 400, { error: "Project title must be 100 characters or fewer" });
           }
-
           item.title = title;
         }
 
@@ -1167,33 +1313,29 @@ db[key] = Array.isArray(db[key]) ? db[key] : [];
           }
           item.title = item.title.trim();
           const titleKey = normalizeServiceTitle(item.title);
-          if (!titleKey) {
-            return json(res, 400, { error: "Service title is required" });
-          }
-          const duplicate = db.services.some(
-            existing => existing.id !== itemId &&
-              normalizeServiceTitle(existing.title) === titleKey
-          );
-          if (duplicate) {
+          if (!titleKey) return json(res, 400, { error: "Service title is required" });
+          if (db.services.some(existing =>
+            existing.id !== decodedId &&
+            normalizeServiceTitle(existing.title) === titleKey
+          )) {
             return json(res, 409, { error: "A service with this title already exists" });
           }
         }
 
-        const currentIndex = db[key].findIndex(
-          existing => existing.id === itemId
-        );
+        const currentIndex = db[key].findIndex(existing => existing.id === decodedId);
+        if (currentIndex < 0) return json(res, 404, { error: "Not found" });
 
-        if (currentIndex < 0) {
-          return json(res, 404, {
-            error: "Not found"
-          });
-        }
-        item.id = itemId;
+        item.id = decodedId;
         db[key][currentIndex] = item;
         writeDB(db);
-
         return json(res, 200, item);
       } catch (error) { return handleApiError(res, error); }
+    }
+
+    if (itemId && req.method === "GET") {
+      const decodedId = decodeURIComponent(itemId);
+      const item = db[key].find(existing => existing.id === decodedId);
+      return item ? json(res, 200, item) : json(res, 404, { error: "Not found" });
     }
   }
 
@@ -1205,7 +1347,6 @@ db[key] = Array.isArray(db[key]) ? db[key] : [];
 
     try {
       const profile = await jsonBody(req);
-      db = readDB();
 
       if (
         !profile ||
@@ -1217,6 +1358,21 @@ db[key] = Array.isArray(db[key]) ? db[key] : [];
         });
       }
 
+      if (STORAGE_BACKEND === "supabase") {
+        const existing = await supabaseStore.get("profile", "main");
+        if (existing) {
+          await supabaseStore.update("profile", "main", profile);
+        } else {
+          await supabaseStore.insert("profile", {
+            id: "main",
+            data: profile
+          });
+        }
+
+        return json(res, 200, profile);
+      }
+
+      db = readDB();
       db.profile = profile;
       writeDB(db);
 
@@ -1236,7 +1392,6 @@ db[key] = Array.isArray(db[key]) ? db[key] : [];
 
     try {
       const data = await jsonBody(req);
-      db = readDB();
 
       if (
         !data ||
@@ -1258,11 +1413,7 @@ db[key] = Array.isArray(db[key]) ? db[key] : [];
         });
       }
 
-      db.messages = Array.isArray(db.messages)
-        ? db.messages
-        : [];
-
-      db.messages.push({
+      const message = {
         id: id("msg"),
         name: String(data.name).slice(0, 120),
         email: String(data.email).slice(0, 200),
@@ -1270,9 +1421,19 @@ db[key] = Array.isArray(db[key]) ? db[key] : [];
         message: String(data.message).slice(0, 5000),
         createdAt: new Date().toISOString(),
         status: "new"
-      });
+      };
 
-      writeDB(db);
+      if (STORAGE_BACKEND === "supabase") {
+        await supabaseStore.insert("messages", {
+          id: message.id,
+          data: message
+        });
+      } else {
+        db = readDB();
+        db.messages = Array.isArray(db.messages) ? db.messages : [];
+        db.messages.push(message);
+        writeDB(db);
+      }
 
       return json(res, 201, {
         ok: true,
@@ -1286,6 +1447,11 @@ db[key] = Array.isArray(db[key]) ? db[key] : [];
     req.method === "GET"
   ) {
     if (!requireAuth(req, res)) return;
+
+    if (STORAGE_BACKEND === "supabase") {
+      const rows = await supabaseStore.list("messages");
+      return json(res, 200, rows.map(row => row.data).filter(Boolean));
+    }
 
     return json(res, 200, db.messages || []);
   }
@@ -1304,6 +1470,26 @@ db[key] = Array.isArray(db[key]) ? db[key] : [];
 
     if (!messageId || messageId.length > 200) {
       return json(res, 400, { error: "Invalid message ID" });
+    }
+
+    if (STORAGE_BACKEND === "supabase") {
+      const row = await supabaseStore.get("messages", messageId);
+      if (!row || !row.data || typeof row.data !== "object") {
+        return json(res, 404, { error: "Message not found" });
+      }
+
+      const message = row.data;
+      if (message.status === "new") {
+        const updated = { ...message, status: "read" };
+        await supabaseStore.update("messages", messageId, updated);
+        message.status = "read";
+      }
+
+      return json(res, 200, {
+        ok: true,
+        id: message.id,
+        status: message.status
+      });
     }
 
     if (!Array.isArray(db.messages)) {
