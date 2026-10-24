@@ -145,7 +145,7 @@ function bindProfile(d){
  };
 }
 function row(x){return `<div class="admin-row"><div><strong>${escapeHTML(x.name||x.title)}</strong><small>${escapeHTML(x.category||x.date||"")}</small></div><div><button class="btn small ghost" data-edit="${x.id}">Edit</button><button class="btn small danger" data-delete="${x.id}">Delete</button></div></div>`;}
-function wireList(id,key,edit){const box=qs(id),d=getPortfolioData();box.innerHTML=(d[key]||[]).map(row).join("");box.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>edit(b.dataset.edit));box.querySelectorAll("[data-delete]").forEach(b=>b.onclick=async()=>{if(!confirm("Delete this item?"))return;const n=getPortfolioData();const item=n[key].find(v=>v.id===b.dataset.delete);if(!item)return;try{const r=await fetch(`/api/${key}/${encodeURIComponent(item.id)}`,{method:"DELETE",headers:{"X-CSRF-Token":window.__csrfToken||""},credentials:"same-origin"});if(!r.ok)throw new Error();n[key]=n[key].filter(v=>v.id!==item.id);savePortfolioData(n);wireList(id,key,edit);updateStats(n);}catch(e){alert("Delete failed.");}});}
+function wireList(id,key,edit){const box=qs(id),d=getPortfolioData();box.innerHTML=(d[key]||[]).map(row).join("");box.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>edit(b.dataset.edit));box.querySelectorAll("[data-delete]").forEach(b=>b.onclick=async()=>{if(!confirm("Delete this item?"))return;const n=getPortfolioData();const item=n[key].find(v=>v.id===b.dataset.delete);if(!item)return;try{const r=await fetch(`/api/${key}/${encodeURIComponent(item.id)}`,{method:"DELETE",headers:{"X-CSRF-Token":window.__csrfToken||""},credentials:"same-origin"});if(!r.ok)throw new Error();n[key]=n[key].filter(v=>v.id!==item.id);savePortfolioData(n);wireList(id,key,edit);updateStats(n);}catch(e){console.error("Delete failed details:",e);alert("Delete failed: "+(e.message||"Unknown error"));}});}
 function autoCategoryFor(type, parts) {
  const text = (parts || []).filter(Boolean).join(" ").toLowerCase();
  const rules = [
@@ -1046,7 +1046,7 @@ function bindPasswordChange() {
 
       item.classList.toggle("met", met);
 
-      if (symbol) symbol.textContent = met ? "✓" : "○";
+      if (symbol) symbol.textContent = met ? "\u2713" : "\u25CB";
       if (met) passed += 1;
     });
 
