@@ -24,6 +24,35 @@ const supabaseStore = STORAGE_BACKEND === "supabase"
   ? require("./supabase-store")
   : null;
 
+const SUPABASE_STORAGE_ENABLED =
+  process.env.SUPABASE_STORAGE_ENABLED === "true";
+
+const supabaseImageStorage = SUPABASE_STORAGE_ENABLED
+  ? require("./supabase-storage")
+  : null;
+
+function getSupabaseStorageOrigin() {
+  if (!SUPABASE_STORAGE_ENABLED) return "";
+
+  try {
+    const parsed = new URL(process.env.SUPABASE_URL || "");
+
+    if (
+      parsed.protocol !== "https:" ||
+      parsed.username ||
+      parsed.password ||
+      parsed.search ||
+      parsed.hash
+    ) {
+      throw new Error("Invalid Supabase URL for image storage.");
+    }
+
+    return parsed.origin;
+  } catch {
+    throw new Error("Invalid Supabase URL for image storage.");
+  }
+}
+
 const DATA_FILE = path.resolve(
   process.env.DATA_FILE || path.join(ROOT, "data", "db.json")
 );
@@ -538,7 +567,8 @@ function serveStatic(req, res) {
         "strict-origin-when-cross-origin",
       "Content-Security-Policy":
         "default-src 'self'; " +
-        "img-src 'self' data:; " +
+        "img-src 'self' data: " +
+        getSupabaseStorageOrigin() + "; " +
         "style-src 'self' 'unsafe-inline'; " +
         "script-src 'self' 'unsafe-inline'; " +
         "connect-src 'self'"
@@ -1642,15 +1672,27 @@ async function api(req, res) {
         crypto.randomBytes(12).toString("hex") +
         extFor(file.type, safeName(file.filename));
 
-      fs.writeFileSync(
-        path.join(UPLOAD_DIR, filename),
-        file.data,
-        { flag: "wx" }
-      );
+      let imageUrl;
+
+      if (SUPABASE_STORAGE_ENABLED) {
+        const uploaded = await supabaseImageStorage.uploadImage(
+          filename,
+          file.data,
+          file.type
+        );
+        imageUrl = uploaded.url;
+      } else {
+        fs.writeFileSync(
+          path.join(UPLOAD_DIR, filename),
+          file.data,
+          { flag: "wx" }
+        );
+        imageUrl = "/uploads/" + filename;
+      }
 
       return json(res, 201, {
         ok: true,
-        url: "/uploads/" + filename,
+        url: imageUrl,
         filename
       });
     } catch (error) { return handleApiError(res, error); }

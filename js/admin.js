@@ -5,6 +5,27 @@ document.addEventListener("DOMContentLoaded",async()=>{
  qs("logoutBtn").onclick=async()=>{await fetch("/api/logout",{method:"POST",headers:{"X-CSRF-Token":window.__csrfToken||""},credentials:"same-origin"});location.reload();};
 });
 function qs(id){return document.getElementById(id);}
+function isAllowedImageUrl(value) {
+  if (typeof value !== "string" || !value || value.startsWith("//")) return false;
+
+  if (value.startsWith("/uploads/")) {
+    return !value.includes("\\") &&
+      !value.split("/").some(part => part === "..");
+  }
+
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" &&
+      url.origin === "https://vdztdrujyghhtqibrrfn.supabase.co" &&
+      url.pathname.startsWith("/storage/v1/object/public/portfolio-uploads/") &&
+      !url.pathname.includes("\\") &&
+      !url.pathname.split("/").some(part => part === "..") &&
+      !url.search && !url.hash;
+  } catch {
+    return false;
+  }
+};
+
 async function initAdmin(){bindTabs();const data=await loadServerData();bindProfile(data);bindSkills(data);bindProjects(data);bindPortfolio(data);bindServices(data);bindBlog(data);bindDataTools();bindPasswordChange();await renderMessages();updateStats(data);}
 function bindTabs(){
  const settingsToggle=qs("settingsMenuToggle");
@@ -50,9 +71,9 @@ function bindProfile(d){
   if(e)e.value=d.profile?.[k]||"";
  });
 
- const showPhoto=url=>{
+const showPhoto=url=>{
   if(!photoPreview)return;
-  if(typeof url==="string" && url.startsWith("/uploads/")){
+  if(isAllowedImageUrl(url)){
    photoPreview.src=url;
    photoPreview.hidden=false;
   }else{
@@ -101,7 +122,7 @@ function bindProfile(d){
    const result=await response.json().catch(()=>({}));
    if(!response.ok)throw new Error(result.error||"Image upload failed.");
 
-   if(typeof result.url!=="string"||!result.url.startsWith("/uploads/")){
+   if(typeof result.url!=="string"||!isAllowedImageUrl(result.url)){
     throw new Error("The server returned an unexpected image URL.");
    }
 
@@ -239,7 +260,7 @@ function bindProjects(){
     });
     const result=await response.json().catch(()=>({}));
     if(!response.ok)throw new Error(result.error||`Upload failed (${response.status}).`);
-    if(typeof result.url!=="string"||!result.url.startsWith("/uploads/")){
+    if(typeof result.url!=="string"||!isAllowedImageUrl(result.url)){
      throw new Error("The server returned an unexpected image URL.");
     }
     imageUrl.value=result.url;
@@ -394,7 +415,7 @@ function bindPortfolio() {
           throw new Error(result.error || "Upload failed (" + response.status + ").");
         }
         if (typeof result.url !== "string" ||
-            !result.url.startsWith("/uploads/")) {
+            !isAllowedImageUrl(result.url)) {
           throw new Error("The server returned an unexpected image URL.");
         }
 
@@ -688,7 +709,7 @@ function bindDataTools() {
         if (!response.ok) {
           throw new Error(result.error || "Image upload failed.");
         }
-        if (typeof result.url !== "string" || !result.url.startsWith("/uploads/")) {
+        if (typeof result.url !== "string" || !isAllowedImageUrl(result.url)) {
           throw new Error("Upload response did not contain a valid image URL.");
         }
         uploadResult.textContent = "Uploaded: " + result.url;

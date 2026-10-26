@@ -19,6 +19,26 @@ document.addEventListener("DOMContentLoaded", async () => {
   window.addEventListener("portfolioDataChanged", () => renderPublicSite(getPortfolioData()));
 });
 
+function isAllowedImageUrl(value) {
+  if (typeof value !== "string" || !value || value.startsWith("//")) return false;
+
+  if (value.startsWith("/uploads/")) {
+    return !value.includes("\\") &&
+      !value.split("/").some(part => part === "..");
+  }
+
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" &&
+      url.origin === "https://vdztdrujyghhtqibrrfn.supabase.co" &&
+      url.pathname.startsWith("/storage/v1/object/public/portfolio-uploads/") &&
+      !url.pathname.includes("\\") &&
+      !url.pathname.split("/").some(part => part === "..") &&
+      !url.search && !url.hash;
+  } catch {
+    return false;
+  }
+}
 function renderPublicSite(data) {
   const profile = data.profile || {};
   const avatar = document.getElementById("profilePhotoDisplay");
@@ -27,7 +47,7 @@ function renderPublicSite(data) {
       .trim().split(/\s+/).filter(Boolean).slice(0, 2)
       .map(part => part.charAt(0).toUpperCase()).join("") || "AM";
     const photoUrl = typeof profile.image === "string" &&
-      profile.image.startsWith("/uploads/") ? profile.image : "";
+      isAllowedImageUrl(profile.image) ? profile.image : "";
     avatar.replaceChildren();
     if (photoUrl) {
       const img = document.createElement("img");
