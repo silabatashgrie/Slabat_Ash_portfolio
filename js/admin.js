@@ -50,17 +50,29 @@ function bindProfile(d){
   if(e)e.value=d.profile?.[k]||"";
  });
 
- const showPhoto=url=>{
-  if(!photoPreview)return;
-  if(typeof url==="string" && url.startsWith("/uploads/")){
-   photoPreview.src=url;
-   photoPreview.hidden=false;
-  }else{
-   photoPreview.removeAttribute("src");
-   photoPreview.hidden=true;
+ 
+const showPhoto = url => {
+  if (!photoPreview) return;
+
+  if (
+    typeof url === "string" &&
+    (
+      url.startsWith("/uploads/") ||
+      (
+        url.startsWith("https://") &&
+        /^https:\/\/[^/]+\.supabase\.co\/storage\/v1\/object\/public\/portfolio-uploads\/.+/.test(url)
+      )
+    )
+  ) {
+    photoPreview.src = url;
+    photoPreview.hidden = false;
+  } else {
+    photoPreview.removeAttribute("src");
+    photoPreview.hidden = true;
   }
- };
- showPhoto(d.profile?.image||"");
+};
+
+showPhoto(d.profile?.image || "");
 
  if(photoFile)photoFile.onchange=()=>{
   const file=photoFile.files?.[0];
