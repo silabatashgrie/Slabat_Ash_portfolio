@@ -101,9 +101,18 @@ function bindProfile(d){
    const result=await response.json().catch(()=>({}));
    if(!response.ok)throw new Error(result.error||"Image upload failed.");
 
-   if(typeof result.url!=="string"||!result.url.startsWith("/uploads/")){
-    throw new Error("The server returned an unexpected image URL.");
-   }
+ if (
+  typeof result.url !== "string" ||
+  !(
+    result.url.startsWith("/uploads/") ||
+    (
+      result.url.startsWith("https://") &&
+      /^https:\/\/[^/]+\.supabase\.co\/storage\/v1\/object\/public\/portfolio-uploads\/[A-Za-z0-9._/-]+$/.test(result.url)
+    )
+  )
+) {
+  throw new Error("The server returned an unexpected image URL.");
+}
 
    const current=await loadServerData();
    const next={...current,profile:{...(current.profile||{}),image:result.url}};
@@ -239,9 +248,18 @@ function bindProjects(){
     });
     const result=await response.json().catch(()=>({}));
     if(!response.ok)throw new Error(result.error||`Upload failed (${response.status}).`);
-    if(typeof result.url!=="string"||!result.url.startsWith("/uploads/")){
-     throw new Error("The server returned an unexpected image URL.");
-    }
+   if (
+  typeof result.url !== "string" ||
+  !(
+    result.url.startsWith("/uploads/") ||
+    (
+      result.url.startsWith("https://") &&
+      /^https:\/\/[^/]+\.supabase\.co\/storage\/v1\/object\/public\/portfolio-uploads\/[A-Za-z0-9._/-]+$/.test(result.url)
+    )
+  )
+) {
+  throw new Error("The server returned an unexpected image URL.");
+}
     imageUrl.value=result.url;
     setProjectImagePreview(result.url);
     if(status)status.textContent="Upload successful. Save the project to keep this image attached.";
@@ -393,10 +411,18 @@ function bindPortfolio() {
         if (!response.ok) {
           throw new Error(result.error || "Upload failed (" + response.status + ").");
         }
-        if (typeof result.url !== "string" ||
-            !result.url.startsWith("/uploads/")) {
-          throw new Error("The server returned an unexpected image URL.");
-        }
+if (
+  typeof result.url !== "string" ||
+  !(
+    result.url.startsWith("/uploads/") ||
+    (
+      result.url.startsWith("https://") &&
+      /^https:\/\/[^/]+\.supabase\.co\/storage\/v1\/object\/public\/portfolio-uploads\/[A-Za-z0-9._/-]+$/.test(result.url)
+    )
+  )
+) {
+  throw new Error("The server returned an unexpected image URL.");
+}       
 
         imageUrl.value = result.url;
         setPortfolioImagePreview(result.url);
