@@ -714,9 +714,18 @@ function bindDataTools() {
         if (!response.ok) {
           throw new Error(result.error || "Image upload failed.");
         }
-        if (typeof result.url !== "string" || !result.url.startsWith("/uploads/")) {
-          throw new Error("Upload response did not contain a valid image URL.");
-        }
+       if (
+  typeof result.url !== "string" ||
+  !(
+    result.url.startsWith("/uploads/") ||
+    (
+      result.url.startsWith("https://") &&
+      /^https:\/\/[^/]+\.supabase\.co\/storage\/v1\/object\/public\/portfolio-uploads\/[A-Za-z0-9._/-]+$/.test(result.url)
+    )
+  )
+) {
+  throw new Error("The server returned an unexpected image URL.");
+}
         uploadResult.textContent = "Uploaded: " + result.url;
       } catch (error) {
         uploadResult.textContent = error.message || "Image upload failed.";
