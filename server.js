@@ -598,8 +598,8 @@ function serveStatic(req, res) {
         "strict-origin-when-cross-origin",
       "Content-Security-Policy":
         "default-src 'self'; " +
-        "img-src 'self' data: " +
-        getSupabaseStorageOrigin() + "; " +
+        "img-src 'self' data: blob: " +
+                getSupabaseStorageOrigin() + "; " +
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
         "font-src 'self' https://fonts.gstatic.com data:; " +
         "script-src 'self' 'unsafe-inline'; " +
