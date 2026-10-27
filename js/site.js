@@ -26,8 +26,17 @@ function renderPublicSite(data) {
     const initials = String(profile.name || "AM")
       .trim().split(/\s+/).filter(Boolean).slice(0, 2)
       .map(part => part.charAt(0).toUpperCase()).join("") || "AM";
-    const photoUrl = typeof profile.image === "string" &&
-      profile.image.startsWith("/uploads/") ? profile.image : "";
+    
+const photoUrl = typeof profile.image === "string" &&
+  (
+    profile.image.startsWith("/uploads/") ||
+    profile.image.startsWith(
+      "https://vdztdrujyghhtqibrrfn.supabase.co/storage/v1/object/public/portfolio-uploads/"
+    )
+  )
+    ? profile.image
+    : "";
+
     avatar.replaceChildren();
     if (photoUrl) {
       const img = document.createElement("img");
