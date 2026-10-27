@@ -10,6 +10,32 @@ const path = require("path");
 const crypto = require("crypto");
 const url = require("url");
 
+// Load .env without dependencies. Existing environment variables take priority.
+const ENV_FILE = path.join(__dirname, ".env");
+
+if (fs.existsSync(ENV_FILE)) {
+  const envText = fs.readFileSync(ENV_FILE, "utf8");
+
+  for (const line of envText.split(/\r?\n/)) {
+    if (/^\s*(?:#|$)/.test(line)) continue;
+
+    const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/);
+    if (!match || process.env[match[1]] !== undefined) continue;
+
+    let value = match[2].trim();
+
+    if (
+      value.length >= 2 &&
+      ((value.startsWith('"') && value.endsWith('"')) ||
+       (value.startsWith("'") && value.endsWith("'")))
+    ) {
+      value = value.slice(1, -1);
+    }
+
+    process.env[match[1]] = value;
+  }
+}
+
 const ROOT = __dirname;
 const STORAGE_BACKEND = process.env.DATA_FILE
   ? "json"
@@ -23,6 +49,40 @@ if (!["json", "supabase"].includes(STORAGE_BACKEND)) {
 const supabaseStore = STORAGE_BACKEND === "supabase"
   ? require("./supabase-store")
   : null;
+
+// When Supabase is the persistent data backend, use persistent Supabase
+// Storage by default too. Render's local filesystem is ephemeral and can be
+// cleared whenever the service restarts or redeploys. Set the variable to
+// "false" only when explicitly opting out of Supabase image storage.
+const SUPABASE_STORAGE_ENABLED =
+  String(process.env.SUPABASE_STORAGE_ENABLED || "").toLowerCase() === "true" ||
+  (process.env.SUPABASE_STORAGE_ENABLED === undefined && STORAGE_BACKEND === "supabase");
+
+const supabaseImageStorage = SUPABASE_STORAGE_ENABLED
+  ? require("./supabase-storage")
+  : null;
+
+function getSupabaseStorageOrigin() {
+  if (!SUPABASE_STORAGE_ENABLED) return "";
+
+  try {
+    const parsed = new URL(process.env.SUPABASE_URL || "");
+
+    if (
+      parsed.protocol !== "https:" ||
+      parsed.username ||
+      parsed.password ||
+      parsed.search ||
+      parsed.hash
+    ) {
+      throw new Error("Invalid Supabase URL for image storage.");
+    }
+
+    return parsed.origin;
+  } catch {
+    throw new Error("Invalid Supabase URL for image storage.");
+  }
+}
 
 const DATA_FILE = path.resolve(
   process.env.DATA_FILE || path.join(ROOT, "data", "db.json")
@@ -538,8 +598,10 @@ function serveStatic(req, res) {
         "strict-origin-when-cross-origin",
       "Content-Security-Policy":
         "default-src 'self'; " +
-        "img-src 'self' data:; " +
-        "style-src 'self' 'unsafe-inline'; " +
+        "img-src 'self' data: " +
+        getSupabaseStorageOrigin() + "; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+        "font-src 'self' https://fonts.gstatic.com data:; " +
         "script-src 'self' 'unsafe-inline'; " +
         "connect-src 'self'"
     });
@@ -827,7 +889,7 @@ async function api(req, res) {
 
     if (data.newPassword.length < 12 || data.newPassword.length > 128) {
       return json(res, 400, {
-        error: "The new password must be 12â€“128 characters long."
+        error: "The new password must be 12Ã¢â‚¬â€œ128 characters long."
       });
     }
 
@@ -1642,15 +1704,27 @@ async function api(req, res) {
         crypto.randomBytes(12).toString("hex") +
         extFor(file.type, safeName(file.filename));
 
-      fs.writeFileSync(
-        path.join(UPLOAD_DIR, filename),
-        file.data,
-        { flag: "wx" }
-      );
+      let imageUrl;
+
+      if (SUPABASE_STORAGE_ENABLED) {
+        const uploaded = await supabaseImageStorage.uploadImage(
+          filename,
+          file.data,
+          file.type
+        );
+        imageUrl = uploaded.url;
+      } else {
+        fs.writeFileSync(
+          path.join(UPLOAD_DIR, filename),
+          file.data,
+          { flag: "wx" }
+        );
+        imageUrl = "/uploads/" + filename;
+      }
 
       return json(res, 201, {
         ok: true,
-        url: "/uploads/" + filename,
+        url: imageUrl,
         filename
       });
     } catch (error) { return handleApiError(res, error); }
@@ -1685,3 +1759,4 @@ server.listen(PORT, () => {
     `Portfolio server running at http://localhost:${PORT}`
   );
 });
+
