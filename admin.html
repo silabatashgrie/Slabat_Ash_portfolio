@@ -1401,7 +1401,224 @@ select:focus {
   .admin-nav .settings-chevron,
   .admin-nav-submenu > button { transition:none; }
 }
-/* END ADMIN-ICON-NAV-V1 */</style>
+/* END ADMIN-ICON-NAV-V1 */
+/* ADMIN-MOBILE-RESPONSIVE-V1 */
+.admin-shell,
+.admin-sidebar,
+.admin-main,
+.admin-main *,
+.admin-sidebar * {
+  box-sizing: border-box;
+}
+
+.admin-shell {
+  min-width: 0;
+}
+
+.admin-main {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-main img,
+.admin-main video,
+.admin-main iframe {
+  max-width: 100%;
+}
+
+.admin-main input:not([type="checkbox"]):not([type="radio"]),
+.admin-main select,
+.admin-main textarea {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.admin-main table {
+  max-width: 100%;
+  border-collapse: collapse;
+}
+
+@media (max-width: 900px) {
+  .admin-shell {
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
+  }
+
+  .admin-sidebar {
+    position: relative;
+    top: auto;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    padding: 16px;
+  }
+
+  .admin-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 0;
+    max-width: 100%;
+    overflow: visible;
+  }
+
+  .admin-sidebar .admin-nav > button,
+  .admin-sidebar .admin-nav .admin-nav-group {
+    flex: 0 0 auto;
+    max-width: 100%;
+  }
+
+  .admin-sidebar .admin-nav .admin-nav-submenu {
+    max-width: 100%;
+    margin-left: 0;
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .admin-main {
+    width: 100%;
+    max-width: 100%;
+    padding: 22px 18px;
+  }
+
+  .admin-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .chat-inbox {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-sidebar {
+    padding: 12px;
+  }
+
+  .admin-nav {
+    gap: 7px;
+  }
+
+  .admin-sidebar .admin-nav > button,
+  .admin-sidebar .admin-nav .admin-nav-group-toggle {
+    min-height: 42px;
+  }
+
+  .admin-main {
+    padding: 16px 12px;
+  }
+
+  .admin-main h1 {
+    font-size: clamp(23px, 6vw, 29px);
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-main h2 {
+    font-size: 19px;
+  }
+
+  .admin-main .panel {
+    min-width: 0;
+    max-width: 100%;
+    padding: 15px;
+  }
+
+  .admin-grid,
+  .form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .stat {
+    min-width: 0;
+    padding: 12px;
+  }
+
+  .stat strong {
+    font-size: clamp(20px, 6vw, 26px);
+    overflow-wrap: anywhere;
+  }
+
+  .admin-top {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .admin-main button,
+  .admin-main .btn {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-main table {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .chat-inbox {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+    min-height: 0;
+    border-radius: 13px;
+  }
+
+  .chat-contacts-panel {
+    min-width: 0;
+    max-height: 300px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line, #414b5a);
+  }
+
+  .chat-contact-list {
+    max-height: 190px;
+  }
+
+  .chat-thread-panel {
+    min-width: 0;
+    min-height: 400px;
+  }
+
+  .chat-thread-header {
+    gap: 10px;
+    padding: 13px;
+  }
+
+  .chat-message-list {
+    padding: 14px 10px;
+  }
+
+  .chat-message {
+    max-width: 96%;
+  }
+}
+
+@media (max-width: 380px) {
+  .admin-main {
+    padding-right: 9px;
+    padding-left: 9px;
+  }
+
+  .stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-main .panel {
+    padding: 12px;
+  }
+}
+/* END ADMIN-MOBILE-RESPONSIVE-V1 */
+
+</style>
 </head>
 <body>
 <div id="adminLogin" class="admin-login">
