@@ -12,29 +12,84 @@ function bindTabs(){
 
  if(settingsToggle&&settingsSubmenu){
   settingsToggle.onclick=()=>{
-   const opening=settingsSubmenu.hidden;
-   settingsSubmenu.hidden=!opening;
-   settingsToggle.setAttribute("aria-expanded",String(opening));
+function bindTabs() {
+ const settingsToggle = qs("settingsMenuToggle");
+ const settingsSubmenu = qs("settingsSubmenu");
+
+ // Mobile hamburger menu elements
+ const menuToggle = qs("adminMenuToggle");
+ const adminNavigation = qs("adminNavigation");
+ const adminSidebar = document.querySelector(".admin-sidebar");
+
+ // Toggle mobile navigation menu
+ if (menuToggle && adminNavigation && adminSidebar) {
+  menuToggle.onclick = () => {
+   const opening = !adminSidebar.classList.contains("menu-open");
+
+   adminSidebar.classList.toggle("menu-open", opening);
+
+   menuToggle.setAttribute("aria-expanded", String(opening));
+   menuToggle.setAttribute(
+    "aria-label",
+    opening ? "Close navigation menu" : "Open navigation menu"
+   );
   };
  }
 
- document.querySelectorAll(".admin-nav button[data-section]").forEach(b=>{
-  b.onclick=()=>{
-   const target=qs(b.dataset.section);
-   if(!target)return;
+ // Toggle Settings submenu
+ if (settingsToggle && settingsSubmenu) {
+  settingsToggle.onclick = () => {
+   const opening = settingsSubmenu.hidden;
 
-   document.querySelectorAll(".admin-nav button").forEach(x=>x.classList.remove("active"));
-   document.querySelectorAll(".admin-section").forEach(x=>x.classList.remove("active"));
+   settingsSubmenu.hidden = !opening;
+   settingsToggle.setAttribute("aria-expanded", String(opening));
+  };
+ }
 
-   b.classList.add("active");
+ // Handle navigation section selection
+ document.querySelectorAll(".admin-nav button[data-section]").forEach(button => {
+  button.onclick = () => {
+   const target = qs(button.dataset.section);
+   if (!target) return;
+
+   // Remove active state from navigation buttons
+   document.querySelectorAll(".admin-nav button").forEach(item => {
+    item.classList.remove("active");
+   });
+
+   // Hide all admin sections
+   document.querySelectorAll(".admin-section").forEach(section => {
+    section.classList.remove("active");
+   });
+
+   // Activate selected navigation button and section
+   button.classList.add("active");
    target.classList.add("active");
 
-   if(settingsSubmenu && settingsToggle && settingsSubmenu.contains(b)){
-    settingsSubmenu.hidden=false;
-    settingsToggle.setAttribute("aria-expanded","true");
+   // Keep Settings submenu open when a Settings item is selected
+   if (
+    settingsSubmenu &&
+    settingsToggle &&
+    settingsSubmenu.contains(button)
+   ) {
+    settingsSubmenu.hidden = false;
+    settingsToggle.setAttribute("aria-expanded", "true");
+   }
+
+   // Close mobile navigation after selecting a section
+   if (
+    adminSidebar &&
+    menuToggle &&
+    window.matchMedia("(max-width: 900px)").matches
+   ) {
+    adminSidebar.classList.remove("menu-open");
+
+    menuToggle.setAttribute("aria-expanded", "false");
+    menuToggle.setAttribute("aria-label", "Open navigation menu");
    }
   };
  });
+}
 }
 function updateStats(d){qs("statProjects").textContent=d.projects?.length||0;qs("statPortfolio").textContent=d.portfolio?.length||0;qs("statServices").textContent=d.services?.length||0;qs("statPosts").textContent=d.posts?.length||0;}
 async function persist(d){const r=await saveServerData(d);if(r?.localOnly)alert("Server unavailable. A local browser copy was saved.");updateStats(d);}
