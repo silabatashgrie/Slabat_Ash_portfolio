@@ -1616,6 +1616,72 @@ select:focus {
     padding: 12px;
   }
 }
+
+/* ADMIN MOBILE HAMBURGER MENU */
+.admin-menu-toggle {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .admin-sidebar .admin-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 46px;
+    margin-top: 14px;
+    padding: 10px 14px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface2);
+    color: var(--text);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .admin-menu-toggle:hover,
+  .admin-menu-toggle:focus-visible {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 229, 245, .14);
+  }
+
+  .admin-menu-icon {
+    font-size: 1.35rem;
+    line-height: 1;
+  }
+
+  .admin-sidebar:not(.menu-open) #adminNavigation {
+    display: none !important;
+  }
+
+  .admin-sidebar.menu-open #adminNavigation {
+    display: flex !important;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    margin-top: 14px;
+    overflow: visible;
+  }
+
+  .admin-sidebar.menu-open #adminNavigation > button,
+  .admin-sidebar.menu-open #adminNavigation .admin-nav-group {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .admin-sidebar:not(.menu-open) > .logout {
+    display: none !important;
+  }
+
+  .admin-sidebar.menu-open > .logout {
+    display: inline-flex;
+    margin-top: 14px;
+  }
+}
+  
 /* END ADMIN-MOBILE-RESPONSIVE-V1 */
 
 </style>
@@ -1637,7 +1703,18 @@ select:focus {
 <div class="admin-shell">
 <aside class="admin-sidebar">
   <div class="admin-brand">slabat<span class="accent">.</span> Admin</div>
-  <nav class="admin-nav">
+  <button
+  type="button"
+  id="adminMenuToggle"
+  class="admin-menu-toggle"
+  aria-expanded="false"
+  aria-controls="adminNavigation"
+  aria-label="Open navigation menu"
+>
+  <span class="admin-menu-icon" aria-hidden="true">&#9776;</span>
+  <span>Menu</span>
+</button>
+<nav class="admin-nav" id="adminNavigation">
   <button class="active" data-section="overview">
     <svg class="admin-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg><span>Overview</span>
   </button>
