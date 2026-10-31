@@ -6,28 +6,19 @@ document.addEventListener("DOMContentLoaded",async()=>{
 });
 function qs(id){return document.getElementById(id);}
 async function initAdmin(){bindTabs();const data=await loadServerData();bindProfile(data);bindSkills(data);bindProjects(data);bindPortfolio(data);bindServices(data);bindBlog(data);bindDataTools();bindPasswordChange();await renderMessages();updateStats(data);}
-function bindTabs(){
- const settingsToggle=qs("settingsMenuToggle");
- const settingsSubmenu=qs("settingsSubmenu");
-
- if(settingsToggle&&settingsSubmenu){
-  settingsToggle.onclick=()=>{
 function bindTabs() {
  const settingsToggle = qs("settingsMenuToggle");
  const settingsSubmenu = qs("settingsSubmenu");
 
- // Mobile hamburger menu elements
  const menuToggle = qs("adminMenuToggle");
  const adminNavigation = qs("adminNavigation");
  const adminSidebar = document.querySelector(".admin-sidebar");
 
- // Toggle mobile navigation menu
+ // Mobile hamburger menu
  if (menuToggle && adminNavigation && adminSidebar) {
   menuToggle.onclick = () => {
    const opening = !adminSidebar.classList.contains("menu-open");
-
    adminSidebar.classList.toggle("menu-open", opening);
-
    menuToggle.setAttribute("aria-expanded", String(opening));
    menuToggle.setAttribute(
     "aria-label",
@@ -36,37 +27,32 @@ function bindTabs() {
   };
  }
 
- // Toggle Settings submenu
+ // Settings submenu
  if (settingsToggle && settingsSubmenu) {
   settingsToggle.onclick = () => {
    const opening = settingsSubmenu.hidden;
-
    settingsSubmenu.hidden = !opening;
    settingsToggle.setAttribute("aria-expanded", String(opening));
   };
  }
 
- // Handle navigation section selection
+ // Navigation section selection
  document.querySelectorAll(".admin-nav button[data-section]").forEach(button => {
   button.onclick = () => {
    const target = qs(button.dataset.section);
    if (!target) return;
 
-   // Remove active state from navigation buttons
    document.querySelectorAll(".admin-nav button").forEach(item => {
     item.classList.remove("active");
    });
 
-   // Hide all admin sections
    document.querySelectorAll(".admin-section").forEach(section => {
     section.classList.remove("active");
    });
 
-   // Activate selected navigation button and section
    button.classList.add("active");
    target.classList.add("active");
 
-   // Keep Settings submenu open when a Settings item is selected
    if (
     settingsSubmenu &&
     settingsToggle &&
@@ -76,20 +62,18 @@ function bindTabs() {
     settingsToggle.setAttribute("aria-expanded", "true");
    }
 
-   // Close mobile navigation after selecting a section
+   // Close the mobile menu after a section is selected
    if (
     adminSidebar &&
     menuToggle &&
     window.matchMedia("(max-width: 900px)").matches
    ) {
     adminSidebar.classList.remove("menu-open");
-
     menuToggle.setAttribute("aria-expanded", "false");
     menuToggle.setAttribute("aria-label", "Open navigation menu");
    }
   };
  });
-}
 }
 function updateStats(d){qs("statProjects").textContent=d.projects?.length||0;qs("statPortfolio").textContent=d.portfolio?.length||0;qs("statServices").textContent=d.services?.length||0;qs("statPosts").textContent=d.posts?.length||0;}
 async function persist(d){const r=await saveServerData(d);if(r?.localOnly)alert("Server unavailable. A local browser copy was saved.");updateStats(d);}
